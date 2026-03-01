@@ -27,11 +27,10 @@ export const OFFSET = {
 
 // Standard scroll-reveal variants
 export const fadeInUp = {
-  hidden: { opacity: 0, y: OFFSET.fadeIn, filter: "blur(4px)" },
+  hidden: { opacity: 0, y: OFFSET.fadeIn },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
       duration: DURATION.normal,
       ease: EASE.smooth,
@@ -51,11 +50,10 @@ export const staggerContainer = {
 }
 
 export const staggerItem = {
-  hidden: { opacity: 0, y: OFFSET.fadeIn, filter: "blur(4px)" },
+  hidden: { opacity: 0, y: OFFSET.fadeIn },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
       duration: DURATION.normal,
       ease: EASE.smooth,

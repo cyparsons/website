@@ -461,7 +461,7 @@ function WhySwiftStack() {
               <motion.div
                 key={point}
                 variants={reduced ? undefined : staggerItem}
-                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all duration-300 hover:border-accent/20 hover:shadow-sm"
+                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/20 hover:shadow-sm"
               >
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10">
                   <AnimatedCheck delay={i * 0.15} />

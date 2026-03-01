@@ -7,7 +7,7 @@ const fields = [
   { label: "Policy Number", left: "PLH-0042819", right: "PLH-0042819", status: "verified" as const },
   { label: "Named Insured", left: "Nexus Freight Corp", right: "Nexus Freight Corp", status: "verified" as const },
   { label: "Serial Number", left: "4UZAANDH5BC...", right: "4UZAANDH5BC...", status: "verified" as const },
-  { label: "Loss Payee", left: "Dynamic Cap...", right: "Dynamic Capital", status: "flagged" as const },
+  { label: "Loss Payee", left: "Maple Leaf Leasing", right: "Northern Credit Corp", status: "flagged" as const },
   { label: "Policy Expiry", left: "2026-08-15", right: "2026-08-15", status: "verified" as const },
   { label: "Deductible", left: "$5,000", right: "$2,500", status: "flagged" as const },
 ]
@@ -49,20 +49,23 @@ export function HeroAnimation() {
   const leftDocX = 0
   const rightDocX = 330
   const docW = 260
-  const docH = 340
-  const fieldStartY = 80
+  const fieldStartY = 62
   const fieldH = 36
-  const fieldGap = 44
+  const fieldGap = 38
   const fieldPadX = 14
   const fieldW = docW - fieldPadX * 2
   const midGap = rightDocX - (leftDocX + docW)
   const midX = leftDocX + docW + midGap / 2
+  const docH = fieldStartY + (fields.length - 1) * fieldGap + fieldH + 10
+  const summaryY = docH + 10
+  const summaryH = 36
+  const totalH = summaryY + summaryH + 4
 
   // Static final frame for reduced motion
   if (reduced) {
     return (
       <div className="relative w-full">
-        <svg viewBox="0 0 620 420" fill="none" className="w-full h-auto">
+        <svg viewBox={`0 0 590 ${totalH}`} fill="none" className="w-full h-auto">
           {/* Left document */}
           <rect x={leftDocX} y="0" width={docW} height={docH} rx="10" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
           <rect x={leftDocX + fieldPadX} y="16" width="100" height="10" rx="3" fill="var(--color-border)" />
@@ -96,11 +99,11 @@ export function HeroAnimation() {
           })}
 
           {/* Summary bar */}
-          <rect x={leftDocX} y={docH + 20} width={rightDocX + docW - leftDocX} height="40" rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
-          <circle cx={leftDocX + 24} cy={docH + 40} r="5" fill="var(--color-verified)" />
-          <text x={leftDocX + 36} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
-          <circle cx={leftDocX + 130} cy={docH + 40} r="5" fill="var(--color-flagged)" />
-          <text x={leftDocX + 142} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
+          <rect x={leftDocX} y={summaryY} width={rightDocX + docW - leftDocX} height={summaryH} rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
+          <circle cx={leftDocX + 24} cy={summaryY + summaryH / 2} r="5" fill="var(--color-verified)" />
+          <text x={leftDocX + 36} y={summaryY + summaryH / 2 + 4} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
+          <circle cx={leftDocX + 130} cy={summaryY + summaryH / 2} r="5" fill="var(--color-flagged)" />
+          <text x={leftDocX + 142} y={summaryY + summaryH / 2 + 4} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
         </svg>
       </div>
     )
@@ -108,7 +111,7 @@ export function HeroAnimation() {
 
   return (
     <div className="relative w-full">
-      <svg viewBox="0 0 620 420" fill="none" className="w-full h-auto">
+      <svg viewBox={`0 0 590 ${totalH}`} fill="none" className="w-full h-auto">
         {/* Left document - slides in from left */}
         <motion.g
           initial={{ x: -40, opacity: 0 }}
@@ -186,7 +189,7 @@ export function HeroAnimation() {
               />
 
               {/* Status dot at midpoint */}
-              <motion.svg x={midX - 5} y={y + fieldH / 2 - 5} overflow="visible">
+              <motion.svg x={midX} y={y + fieldH / 2} overflow="visible">
                 <StatusDot status={field.status} delay={delay - 0.6} />
               </motion.svg>
             </g>
@@ -199,11 +202,11 @@ export function HeroAnimation() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 3.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <rect x={leftDocX} y={docH + 20} width={rightDocX + docW - leftDocX} height="40" rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
-          <circle cx={leftDocX + 24} cy={docH + 40} r="5" fill="var(--color-verified)" />
-          <text x={leftDocX + 36} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
-          <circle cx={leftDocX + 130} cy={docH + 40} r="5" fill="var(--color-flagged)" />
-          <text x={leftDocX + 142} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
+          <rect x={leftDocX} y={summaryY} width={rightDocX + docW - leftDocX} height={summaryH} rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
+          <circle cx={leftDocX + 24} cy={summaryY + summaryH / 2} r="5" fill="var(--color-verified)" />
+          <text x={leftDocX + 36} y={summaryY + summaryH / 2 + 4} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
+          <circle cx={leftDocX + 130} cy={summaryY + summaryH / 2} r="5" fill="var(--color-flagged)" />
+          <text x={leftDocX + 142} y={summaryY + summaryH / 2 + 4} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
         </motion.g>
       </svg>
     </div>

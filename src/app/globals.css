@@ -139,7 +139,9 @@ html {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-modern:hover {
@@ -148,7 +150,7 @@ html {
     0 8px 32px -8px rgba(42, 160, 230, 0.12),
     0 0 0 1px rgba(42, 160, 230, 0.1),
     0 0 60px -12px rgba(42, 160, 230, 0.08);
-  transform: translateY(-3px);
+  translate: 0 -3px;
 }
 
 /* Animated gradient button */
@@ -158,17 +160,20 @@ html {
   color: white;
   border-radius: 10px;
   font-weight: 500;
-  transition: all 0.25s cubic-bezier(0, 0, 0.2, 1);
+  transition: box-shadow 0.25s cubic-bezier(0, 0, 0.2, 1),
+    translate 0.25s cubic-bezier(0, 0, 0.2, 1),
+    scale 0.25s cubic-bezier(0, 0, 0.2, 1);
   box-shadow: 0 2px 8px -2px rgba(42, 160, 230, 0.4);
 }
 
 .btn-primary:hover {
   box-shadow: 0 4px 16px -2px rgba(42, 160, 230, 0.5);
-  transform: translateY(-1px);
+  translate: 0 -1px;
 }
 
 .btn-primary:active {
-  transform: translateY(0) scale(0.98);
+  translate: 0 0;
+  scale: 0.98;
 }
 
 /* Dot grid background */
@@ -194,7 +199,9 @@ html {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-glow:hover {
@@ -203,7 +210,7 @@ html {
     0 8px 32px -8px rgba(42, 160, 230, 0.12),
     0 0 0 1px rgba(42, 160, 230, 0.1),
     0 0 60px -12px rgba(42, 160, 230, 0.08);
-  transform: translateY(-3px);
+  translate: 0 -3px;
 }
 
 /* Animated shimmer border on hover */
@@ -213,7 +220,9 @@ html {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-shimmer::before {
@@ -249,7 +258,7 @@ html {
   box-shadow:
     0 8px 32px -8px rgba(42, 160, 230, 0.12),
     0 0 60px -12px rgba(42, 160, 230, 0.08);
-  transform: translateY(-3px);
+  translate: 0 -3px;
 }
 
 @keyframes shimmer-slide {
