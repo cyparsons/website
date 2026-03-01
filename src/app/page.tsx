@@ -2,12 +2,22 @@
 
 import { motion, useReducedMotion } from "motion/react"
 import Link from "next/link"
-import { Shield, FileSearch, Database, ArrowRight, Check } from "lucide-react"
+import { ArrowRight } from "lucide-react"
+import {
+  ManualIcon,
+  RepetitiveIcon,
+  RiskyIcon,
+  VerificationIcon,
+  LienIcon,
+  SearchIcon,
+} from "@/components/animated-icons"
 import { HeroAnimation } from "@/components/hero-animation"
 import { FadeIn } from "@/components/fade-in"
 import { CountUp } from "@/components/count-up"
 import { Accordion } from "@/components/accordion"
 import { FAQSchema } from "@/components/schema"
+import { AnimatedCheck } from "@/components/animated-check"
+import { AnimatedDivider } from "@/components/animated-divider"
 import {
   staggerContainer,
   staggerItem,
@@ -19,7 +29,7 @@ import {
 
 const solutionCards = [
   {
-    icon: Shield,
+    icon: VerificationIcon,
     title: "Smarter Insurance Reviews",
     subtitle: "COI Verification",
     body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster.",
@@ -32,7 +42,7 @@ const solutionCards = [
     gradient: "from-[#2AA0E6]/10 to-transparent",
   },
   {
-    icon: FileSearch,
+    icon: LienIcon,
     title: "Automated Lien Validation",
     subtitle: "PPSA & UCC Filing Verification",
     body: "We're building automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package.",
@@ -42,7 +52,7 @@ const solutionCards = [
     gradient: "from-[#006AAE]/10 to-transparent",
   },
   {
-    icon: Database,
+    icon: SearchIcon,
     title: "Debtor Search Intelligence",
     subtitle: "Registration Analysis",
     body: "Debtor search results can run hundreds of pages. We're building intelligence that surfaces existing registrations, general security agreements, and blanket liens in minutes.",
@@ -51,6 +61,31 @@ const solutionCards = [
     badge: "Coming Soon",
     gradient: "from-[#003263]/10 to-transparent",
   },
+]
+
+const problemCards = [
+  {
+    icon: ManualIcon,
+    title: "Manual",
+    body: "Field-by-field PDF review on every deal. Your team opens documents, reads line by line, and cross-references by hand.",
+  },
+  {
+    icon: RepetitiveIcon,
+    title: "Repetitive",
+    body: "Same verification checks on every deal, every day. Skilled people doing work that doesn't require their expertise.",
+  },
+  {
+    icon: RiskyIcon,
+    title: "Risky",
+    body: "At volume, deficiencies slip through. A missed serial number or expired policy can mean funding against incomplete coverage.",
+  },
+]
+
+const metrics = [
+  { value: 4, suffix: "x", label: "Faster verification", description: "compared to manual review" },
+  { value: 60, suffix: "%", label: "COIs have deficiencies", description: "caught before funding" },
+  { value: 99, suffix: "%", label: "Extraction accuracy", description: "across document types" },
+  { value: 150, suffix: "+", label: "Fields verified", description: "per deal package" },
 ]
 
 const whyPoints = [
@@ -94,15 +129,27 @@ function Hero() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 md:pt-40 md:pb-32">
-      {/* Ambient glow behind hero */}
+    <section className="relative overflow-hidden pt-28 pb-16 md:pt-40 md:pb-24">
+      {/* Dot grid background */}
       <div
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full opacity-30 blur-[120px]"
-        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
+        className="bg-dot-grid-fade pointer-events-none absolute inset-0"
+        aria-hidden="true"
+      />
+      {/* Radial fade to mask grid edges */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 30%, transparent 50%, var(--color-surface) 80%)" }}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2 md:gap-20">
+      {/* Ambient glow behind hero */}
+      <div
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full opacity-30 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-16">
         {/* Text */}
         <div>
           <motion.div
@@ -156,7 +203,7 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Animation with glow backdrop */}
+        {/* Animation — floating with glow, no border frame */}
         <motion.div
           className="relative flex justify-center"
           initial={reduced ? undefined : { opacity: 0, scale: 0.95 }}
@@ -165,24 +212,36 @@ function Hero() {
         >
           {/* Glow behind the animation */}
           <div
-            className="pointer-events-none absolute inset-0 -m-8 rounded-3xl opacity-50 blur-2xl"
-            style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.08), transparent 70%)" }}
+            className="pointer-events-none absolute inset-0 -m-12 rounded-3xl opacity-60 blur-3xl"
+            style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.1), transparent 70%)" }}
             aria-hidden="true"
           />
-          <div className="relative rounded-2xl border border-border/50 bg-surface/80 p-4 shadow-xl shadow-accent/[0.03] backdrop-blur-sm">
+          <div className="relative w-full">
             <HeroAnimation />
           </div>
         </motion.div>
       </div>
+
+      {/* Credibility line */}
+      <motion.p
+        className="relative mt-16 text-center text-sm text-text-tertiary"
+        initial={reduced ? undefined : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      >
+        Purpose-built for equipment finance lenders in Canada and the US
+      </motion.p>
     </section>
   )
 }
 
 function Problem() {
+  const reduced = useReducedMotion()
+
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-16 md:py-24">
       {/* Subtle background tint */}
-      <div className="absolute inset-0 bg-gradient-to-b from-surface-alt/50 to-transparent" aria-hidden="true" />
+      <div className="absolute inset-0 bg-surface-alt/50" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
@@ -195,7 +254,7 @@ function Problem() {
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <p className="mx-auto mt-8 max-w-2xl text-center text-base leading-relaxed text-text-secondary md:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-text-secondary md:text-lg">
             Between deal approval and funding, your documentation team
             manually verifies every document in the deal package. They open
             PDFs, read fields line by line, cross-reference data against deal
@@ -203,29 +262,76 @@ function Problem() {
           </p>
         </FadeIn>
 
-        {/* Stats row */}
+        {/* Problem cards with icons */}
         <motion.div
-          className="mx-auto mt-14 grid max-w-3xl grid-cols-3 gap-6"
-          variants={staggerContainer}
+          className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-3"
+          variants={reduced ? undefined : staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
         >
-          {[
-            { value: "Manual", label: "Field-by-field PDF review" },
-            { value: "Repetitive", label: "Same checks, every deal" },
-            { value: "Risky", label: "Missed deficiencies at volume" },
-          ].map((item) => (
-            <motion.div
-              key={item.label}
-              variants={staggerItem}
-              className="rounded-xl border border-border bg-surface p-5 text-center"
-            >
-              <p className="text-lg font-semibold text-text-primary">{item.value}</p>
-              <p className="mt-1 text-xs text-text-secondary">{item.label}</p>
-            </motion.div>
-          ))}
+          {problemCards.map((card, i) => {
+            const Icon = card.icon
+            return (
+              <motion.div
+                key={card.title}
+                variants={reduced ? undefined : staggerItem}
+                className="card-glow group p-6 text-center"
+              >
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-text-tertiary/10 to-text-tertiary/5 ring-1 ring-border">
+                  <Icon className="h-5 w-5 text-text-secondary" delay={0.3 + i * 0.2} />
+                </div>
+                <p className="text-lg font-semibold text-text-primary">{card.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-text-secondary">{card.body}</p>
+              </motion.div>
+            )
+          })}
         </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function Metrics() {
+  return (
+    <section className="relative py-16 md:py-20">
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[600px] rounded-full opacity-20 blur-[100px]"
+          style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.3), transparent 70%)" }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-6">
+        {/* Scan line */}
+        <div className="scan-line rounded-2xl" aria-hidden="true" />
+
+        <FadeIn>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
+            {metrics.map((metric, i) => (
+              <div key={metric.label} className="text-center">
+                <span className="text-4xl font-bold text-gradient-accent md:text-5xl">
+                  <CountUp target={metric.value} suffix={metric.suffix} />
+                </span>
+                <p className="mt-2 text-sm font-medium text-text-primary">{metric.label}</p>
+                <p className="mt-0.5 text-xs text-text-tertiary">{metric.description}</p>
+                {/* Animated accent bar */}
+                <motion.div
+                  className="mx-auto mt-3 h-0.5 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  whileInView={{ scaleX: 1, opacity: 0.5 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ delay: 0.8 + i * 0.15, duration: 0.6, ease: EASE.smooth }}
+                  style={{ maxWidth: "64px" }}
+                />
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </div>
     </section>
   )
@@ -235,7 +341,7 @@ function Solutions() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="solutions" className="py-20 md:py-28">
+    <section id="solutions" className="py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
@@ -250,22 +356,22 @@ function Solutions() {
         </FadeIn>
 
         <motion.div
-          className="mt-14 grid gap-6 md:grid-cols-3"
+          className="mt-12 grid gap-6 md:grid-cols-3"
           variants={reduced ? undefined : staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
         >
-          {solutionCards.map((card) => {
+          {solutionCards.map((card, i) => {
             const Icon = card.icon
             return (
               <motion.div
                 key={card.href}
                 variants={reduced ? undefined : staggerItem}
-                className="card-modern group relative overflow-hidden p-6"
+                className="card-shimmer group relative p-6"
               >
                 {/* Gradient accent at top */}
-                <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient}`} />
+                <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient} z-10`} />
 
                 {card.badge && (
                   <span className="absolute top-4 right-4 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
@@ -274,7 +380,7 @@ function Solutions() {
                 )}
 
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/15 to-accent/5 ring-1 ring-accent/10">
-                  <Icon className="h-5 w-5 text-accent" strokeWidth={1.75} />
+                  <Icon className="h-5 w-5 text-accent" delay={0.3 + i * 0.2} />
                 </div>
 
                 <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-tertiary">{card.subtitle}</p>
@@ -322,8 +428,8 @@ function WhySwiftStack() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative py-20 md:py-28">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-surface-alt/30 to-transparent" aria-hidden="true" />
+    <section className="relative py-16 md:py-24">
+      <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-12 md:grid-cols-2 md:gap-20">
@@ -351,14 +457,14 @@ function WhySwiftStack() {
             whileInView="visible"
             viewport={viewportOnce}
           >
-            {whyPoints.map((point) => (
+            {whyPoints.map((point, i) => (
               <motion.div
                 key={point}
                 variants={reduced ? undefined : staggerItem}
-                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4"
+                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all duration-300 hover:border-accent/20 hover:shadow-sm"
               >
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10">
-                  <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                  <AnimatedCheck delay={i * 0.15} />
                 </div>
                 <p className="text-sm leading-relaxed text-text-primary">{point}</p>
               </motion.div>
@@ -372,8 +478,19 @@ function WhySwiftStack() {
 
 function FAQ() {
   return (
-    <section className="py-20 md:py-28">
-      <div className="mx-auto max-w-3xl px-6">
+    <section className="relative py-16 md:py-24">
+      {/* Dot grid background for texture */}
+      <div
+        className="bg-dot-grid-fade pointer-events-none absolute inset-0 opacity-40"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, var(--color-surface) 80%)" }}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto max-w-3xl px-6">
         <FadeIn>
           <div className="mb-10 text-center">
             <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">FAQ</p>
@@ -393,7 +510,7 @@ function FAQ() {
 
 function CTA() {
   return (
-    <section id="cta" className="py-20 md:py-28">
+    <section id="cta" className="py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-16 text-center md:px-16 md:py-20">
@@ -420,7 +537,10 @@ function CTA() {
                   { title: "Launch pricing", body: "Introductory rates available now" },
                   { title: "Configured for you", body: "Set up for your deal types" },
                 ].map((item) => (
-                  <div key={item.title} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div
+                    key={item.title}
+                    className="rounded-xl border border-white/10 bg-white/5 p-4 transition-colors duration-300 hover:border-white/20 hover:bg-white/8"
+                  >
                     <p className="text-sm font-medium text-white">{item.title}</p>
                     <p className="mt-1 text-xs text-gray-400">{item.body}</p>
                   </div>
@@ -490,7 +610,7 @@ function CTA() {
 // ---------- Divider ----------
 
 function SectionDivider() {
-  return <div className="divider-gradient mx-auto max-w-5xl" />
+  return <AnimatedDivider />
 }
 
 // ---------- Page ----------
@@ -502,6 +622,7 @@ export default function HomePage() {
       <Hero />
       <SectionDivider />
       <Problem />
+      <Metrics />
       <SectionDivider />
       <Solutions />
       <SectionDivider />

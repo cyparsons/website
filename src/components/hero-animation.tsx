@@ -15,11 +15,29 @@ const fields = [
 function StatusDot({ status, delay }: { status: "verified" | "flagged"; delay: number }) {
   return (
     <motion.circle
-      r="4"
+      r="5"
       fill={status === "verified" ? "var(--color-verified)" : "var(--color-flagged)"}
       initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: delay + 1.2, duration: 0.3, ease: [0, 0, 0.2, 1] }}
+      animate={{
+        scale: [0, 1, 1, 1.3, 1],
+        opacity: [0, 1, 1, 0.7, 1],
+      }}
+      transition={{
+        scale: {
+          times: [0, 0.15, 0.7, 0.85, 1],
+          duration: 3,
+          delay: delay + 1.2,
+          repeat: Infinity,
+          repeatDelay: 2,
+        },
+        opacity: {
+          times: [0, 0.15, 0.7, 0.85, 1],
+          duration: 3,
+          delay: delay + 1.2,
+          repeat: Infinity,
+          repeatDelay: 2,
+        },
+      }}
     />
   )
 }
@@ -27,68 +45,79 @@ function StatusDot({ status, delay }: { status: "verified" | "flagged"; delay: n
 export function HeroAnimation() {
   const reduced = useReducedMotion()
 
+  // Shared layout constants
+  const leftDocX = 0
+  const rightDocX = 330
+  const docW = 260
+  const docH = 340
+  const fieldStartY = 80
+  const fieldH = 36
+  const fieldGap = 44
+  const fieldPadX = 14
+  const fieldW = docW - fieldPadX * 2
+  const midGap = rightDocX - (leftDocX + docW)
+  const midX = leftDocX + docW + midGap / 2
+
   // Static final frame for reduced motion
   if (reduced) {
     return (
-      <div className="relative w-full max-w-lg">
-        <svg viewBox="0 0 480 370" fill="none" className="w-full">
+      <div className="relative w-full">
+        <svg viewBox="0 0 620 420" fill="none" className="w-full h-auto">
           {/* Left document */}
-          <rect x="16" y="16" width="200" height="280" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
-          <rect x="32" y="32" width="80" height="8" rx="2" fill="var(--color-border)" />
-          <text x="32" y="56" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Certificate of Insurance</text>
+          <rect x={leftDocX} y="0" width={docW} height={docH} rx="10" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
+          <rect x={leftDocX + fieldPadX} y="16" width="100" height="10" rx="3" fill="var(--color-border)" />
+          <text x={leftDocX + fieldPadX} y="46" fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Certificate of Insurance</text>
 
           {/* Right document */}
-          <rect x="264" y="16" width="200" height="280" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
-          <rect x="280" y="32" width="80" height="8" rx="2" fill="var(--color-border)" />
-          <text x="280" y="56" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Equipment Schedule</text>
+          <rect x={rightDocX} y="0" width={docW} height={docH} rx="10" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
+          <rect x={rightDocX + fieldPadX} y="16" width="100" height="10" rx="3" fill="var(--color-border)" />
+          <text x={rightDocX + fieldPadX} y="46" fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Equipment Schedule</text>
 
           {/* Field rows with status */}
           {fields.map((field, i) => {
-            const y = 76 + i * 38
+            const y = fieldStartY + i * fieldGap
             const color = field.status === "verified" ? "var(--color-verified)" : "var(--color-flagged)"
             const bgColor = field.status === "verified" ? "var(--color-verified-light)" : "var(--color-flagged-light)"
             return (
               <g key={i}>
-                <rect x="28" y={y} width="176" height="28" rx="4" fill={bgColor} />
-                <text x="36" y={y + 11} fontSize="7" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
-                <text x="36" y={y + 22} fontSize="8" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.left}</text>
+                <rect x={leftDocX + fieldPadX} y={y} width={fieldW} height={fieldH} rx="5" fill={bgColor} />
+                <text x={leftDocX + fieldPadX + 10} y={y + 14} fontSize="9" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
+                <text x={leftDocX + fieldPadX + 10} y={y + 28} fontSize="10" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.left}</text>
 
-                <rect x="276" y={y} width="176" height="28" rx="4" fill={bgColor} />
-                <text x="284" y={y + 11} fontSize="7" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
-                <text x="284" y={y + 22} fontSize="8" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.right}</text>
+                <rect x={rightDocX + fieldPadX} y={y} width={fieldW} height={fieldH} rx="5" fill={bgColor} />
+                <text x={rightDocX + fieldPadX + 10} y={y + 14} fontSize="9" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
+                <text x={rightDocX + fieldPadX + 10} y={y + 28} fontSize="10" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.right}</text>
 
                 {/* Connection line */}
-                <line x1="204" y1={y + 14} x2="276" y2={y + 14} stroke={color} strokeWidth="1" strokeDasharray="3,3" />
-                <svg x="236" y={y + 10}>
-                  <circle r="4" cx="4" cy="4" fill={color} />
-                </svg>
+                <line x1={leftDocX + docW} y1={y + fieldH / 2} x2={rightDocX} y2={y + fieldH / 2} stroke={color} strokeWidth="1.5" strokeDasharray="4,4" />
+                <circle cx={midX} cy={y + fieldH / 2} r="5" fill={color} />
               </g>
             )
           })}
 
           {/* Summary bar */}
-          <rect x="16" y="320" width="448" height="32" rx="6" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
-          <circle cx="36" cy="336" r="4" fill="var(--color-verified)" />
-          <text x="46" y="339" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
-          <circle cx="120" cy="336" r="4" fill="var(--color-flagged)" />
-          <text x="130" y="339" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
+          <rect x={leftDocX} y={docH + 20} width={rightDocX + docW - leftDocX} height="40" rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
+          <circle cx={leftDocX + 24} cy={docH + 40} r="5" fill="var(--color-verified)" />
+          <text x={leftDocX + 36} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
+          <circle cx={leftDocX + 130} cy={docH + 40} r="5" fill="var(--color-flagged)" />
+          <text x={leftDocX + 142} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
         </svg>
       </div>
     )
   }
 
   return (
-    <div className="relative w-full max-w-lg">
-      <svg viewBox="0 0 480 370" fill="none" className="w-full">
+    <div className="relative w-full">
+      <svg viewBox="0 0 620 420" fill="none" className="w-full h-auto">
         {/* Left document - slides in from left */}
         <motion.g
           initial={{ x: -40, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <rect x="16" y="16" width="200" height="280" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
-          <rect x="32" y="32" width="80" height="8" rx="2" fill="var(--color-border)" />
-          <text x="32" y="56" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Certificate of Insurance</text>
+          <rect x={leftDocX} y="0" width={docW} height={docH} rx="10" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
+          <rect x={leftDocX + fieldPadX} y="16" width="100" height="10" rx="3" fill="var(--color-border)" />
+          <text x={leftDocX + fieldPadX} y="46" fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Certificate of Insurance</text>
         </motion.g>
 
         {/* Right document - slides in from right */}
@@ -97,14 +126,14 @@ export function HeroAnimation() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
         >
-          <rect x="264" y="16" width="200" height="280" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
-          <rect x="280" y="32" width="80" height="8" rx="2" fill="var(--color-border)" />
-          <text x="280" y="56" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Equipment Schedule</text>
+          <rect x={rightDocX} y="0" width={docW} height={docH} rx="10" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1" />
+          <rect x={rightDocX + fieldPadX} y="16" width="100" height="10" rx="3" fill="var(--color-border)" />
+          <text x={rightDocX + fieldPadX} y="46" fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">Equipment Schedule</text>
         </motion.g>
 
         {/* Field rows - staggered reveal */}
         {fields.map((field, i) => {
-          const y = 76 + i * 38
+          const y = fieldStartY + i * fieldGap
           const delay = 0.6 + i * 0.35
           const color = field.status === "verified" ? "var(--color-verified)" : "var(--color-flagged)"
           const bgColor = field.status === "verified" ? "var(--color-verified-light)" : "var(--color-flagged-light)"
@@ -113,7 +142,7 @@ export function HeroAnimation() {
             <g key={i}>
               {/* Left field highlight */}
               <motion.rect
-                x="28" y={y} width="176" height="28" rx="4"
+                x={leftDocX + fieldPadX} y={y} width={fieldW} height={fieldH} rx="5"
                 fill={bgColor}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -124,13 +153,13 @@ export function HeroAnimation() {
                 animate={{ opacity: 1 }}
                 transition={{ delay, duration: 0.3 }}
               >
-                <text x="36" y={y + 11} fontSize="7" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
-                <text x="36" y={y + 22} fontSize="8" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.left}</text>
+                <text x={leftDocX + fieldPadX + 10} y={y + 14} fontSize="9" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
+                <text x={leftDocX + fieldPadX + 10} y={y + 28} fontSize="10" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.left}</text>
               </motion.g>
 
               {/* Right field highlight */}
               <motion.rect
-                x="276" y={y} width="176" height="28" rx="4"
+                x={rightDocX + fieldPadX} y={y} width={fieldW} height={fieldH} rx="5"
                 fill={bgColor}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -141,23 +170,23 @@ export function HeroAnimation() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: delay + 0.1, duration: 0.3 }}
               >
-                <text x="284" y={y + 11} fontSize="7" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
-                <text x="284" y={y + 22} fontSize="8" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.right}</text>
+                <text x={rightDocX + fieldPadX + 10} y={y + 14} fontSize="9" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">{field.label}</text>
+                <text x={rightDocX + fieldPadX + 10} y={y + 28} fontSize="10" fontWeight="500" fill="var(--color-text-primary)" fontFamily="var(--font-sans)">{field.right}</text>
               </motion.g>
 
               {/* Connection line draws between fields */}
               <motion.line
-                x1="204" y1={y + 14} x2="276" y2={y + 14}
+                x1={leftDocX + docW} y1={y + fieldH / 2} x2={rightDocX} y2={y + fieldH / 2}
                 stroke={color}
-                strokeWidth="1"
-                strokeDasharray="3,3"
+                strokeWidth="1.5"
+                strokeDasharray="4,4"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 0.6 }}
                 transition={{ delay: delay + 0.2, duration: 0.4, ease: [0, 0, 0.2, 1] }}
               />
 
               {/* Status dot at midpoint */}
-              <motion.svg x="236" y={y + 10} overflow="visible">
+              <motion.svg x={midX - 5} y={y + fieldH / 2 - 5} overflow="visible">
                 <StatusDot status={field.status} delay={delay - 0.6} />
               </motion.svg>
             </g>
@@ -170,11 +199,11 @@ export function HeroAnimation() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 3.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <rect x="16" y="320" width="448" height="32" rx="6" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
-          <circle cx="36" cy="336" r="4" fill="var(--color-verified)" />
-          <text x="46" y="339" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
-          <circle cx="120" cy="336" r="4" fill="var(--color-flagged)" />
-          <text x="130" y="339" fontSize="8" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
+          <rect x={leftDocX} y={docH + 20} width={rightDocX + docW - leftDocX} height="40" rx="8" fill="var(--color-surface-alt)" stroke="var(--color-border)" strokeWidth="1" />
+          <circle cx={leftDocX + 24} cy={docH + 40} r="5" fill="var(--color-verified)" />
+          <text x={leftDocX + 36} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">4 Verified</text>
+          <circle cx={leftDocX + 130} cy={docH + 40} r="5" fill="var(--color-flagged)" />
+          <text x={leftDocX + 142} y={docH + 44} fontSize="10" fill="var(--color-text-secondary)" fontFamily="var(--font-sans)">2 Flagged</text>
         </motion.g>
       </svg>
     </div>

@@ -4,12 +4,12 @@
 export const DURATION = {
   hover: 0.2,
   fast: 0.15,
-  normal: 0.5,
+  normal: 0.6,
   slow: 0.8,
   countUp: 1.8,
   hero: 5,
   accordion: 0.35,
-  staggerItem: 0.12,
+  staggerItem: 0.15,
 } as const
 
 export const EASE = {
@@ -20,28 +20,30 @@ export const EASE = {
 }
 
 export const OFFSET = {
-  fadeIn: 24,
+  fadeIn: 20,
   hoverLift: -4,
   slideIn: 40,
 } as const
 
 // Standard scroll-reveal variants
 export const fadeInUp = {
-  hidden: { opacity: 0, y: OFFSET.fadeIn },
+  hidden: { opacity: 0, y: OFFSET.fadeIn, filter: "blur(4px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: {
       duration: DURATION.normal,
-      ease: EASE.easeInOut,
+      ease: EASE.smooth,
     },
   },
 }
 
+// Stagger container — does NOT animate its own opacity
+// (prevents the flash where the whole group appears then children animate)
 export const staggerContainer = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
     transition: {
       staggerChildren: DURATION.staggerItem,
     },
@@ -49,16 +51,17 @@ export const staggerContainer = {
 }
 
 export const staggerItem = {
-  hidden: { opacity: 0, y: OFFSET.fadeIn },
+  hidden: { opacity: 0, y: OFFSET.fadeIn, filter: "blur(4px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: {
       duration: DURATION.normal,
-      ease: EASE.easeInOut,
+      ease: EASE.smooth,
     },
   },
 }
 
 // Default viewport config for scroll-triggered animations
-export const viewportOnce = { once: true, amount: 0.2 } as const
+export const viewportOnce = { once: true, amount: 0.25 } as const
