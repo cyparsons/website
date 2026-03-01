@@ -4,19 +4,18 @@ import { motion, useReducedMotion } from "motion/react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import {
-  ManualIcon,
-  RepetitiveIcon,
-  RiskyIcon,
-  VerificationIcon,
-  LienIcon,
-  SearchIcon,
-} from "@/components/animated-icons"
+  ManualWorkflow,
+  RepetitiveWorkflow,
+  RiskyWorkflow,
+  COIVerificationWorkflow,
+  LienValidationWorkflow,
+  DebtorSearchWorkflow,
+} from "@/components/workflow-animations"
 import { HeroAnimation } from "@/components/hero-animation"
 import { FadeIn } from "@/components/fade-in"
 import { CountUp } from "@/components/count-up"
 import { Accordion } from "@/components/accordion"
 import { FAQSchema } from "@/components/schema"
-import { AnimatedCheck } from "@/components/animated-check"
 import { AnimatedDivider } from "@/components/animated-divider"
 import {
   staggerContainer,
@@ -29,7 +28,7 @@ import {
 
 const solutionCards = [
   {
-    icon: VerificationIcon,
+    animation: COIVerificationWorkflow,
     title: "Smarter Insurance Reviews",
     subtitle: "COI Verification",
     body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster.",
@@ -42,7 +41,7 @@ const solutionCards = [
     gradient: "from-[#2AA0E6]/10 to-transparent",
   },
   {
-    icon: LienIcon,
+    animation: LienValidationWorkflow,
     title: "Automated Lien Validation",
     subtitle: "PPSA & UCC Filing Verification",
     body: "We're building automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package.",
@@ -52,7 +51,7 @@ const solutionCards = [
     gradient: "from-[#006AAE]/10 to-transparent",
   },
   {
-    icon: SearchIcon,
+    animation: DebtorSearchWorkflow,
     title: "Debtor Search Intelligence",
     subtitle: "Registration Analysis",
     body: "Debtor search results can run hundreds of pages. We're building intelligence that surfaces existing registrations, general security agreements, and blanket liens in minutes.",
@@ -65,35 +64,22 @@ const solutionCards = [
 
 const problemCards = [
   {
-    icon: ManualIcon,
+    animation: ManualWorkflow,
     title: "Manual",
     body: "Field-by-field PDF review on every deal. Your team opens documents, reads line by line, and cross-references by hand.",
   },
   {
-    icon: RepetitiveIcon,
+    animation: RepetitiveWorkflow,
     title: "Repetitive",
     body: "Same verification checks on every deal, every day. Skilled people doing work that doesn't require their expertise.",
   },
   {
-    icon: RiskyIcon,
+    animation: RiskyWorkflow,
     title: "Risky",
     body: "At volume, deficiencies slip through. A missed serial number or expired policy can mean funding against incomplete coverage.",
   },
 ]
 
-const metrics = [
-  { value: 4, suffix: "x", label: "Faster verification", description: "compared to manual review" },
-  { value: 60, suffix: "%", label: "COIs have deficiencies", description: "caught before funding" },
-  { value: 99, suffix: "%", label: "Extraction accuracy", description: "across document types" },
-  { value: 150, suffix: "+", label: "Fields verified", description: "per deal package" },
-]
-
-const whyPoints = [
-  "Built from the ground up for equipment finance operations",
-  "Designed with documentation teams, not just for them",
-  "Human-in-the-loop is a core principle, not a checkbox",
-  "Full audit trail on every extraction, comparison, and decision",
-]
 
 const faqItems = [
   {
@@ -239,7 +225,7 @@ function Problem() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-14 md:py-20">
       {/* Subtle background tint */}
       <div className="absolute inset-0 bg-surface-alt/50" aria-hidden="true" />
 
@@ -262,7 +248,7 @@ function Problem() {
           </p>
         </FadeIn>
 
-        {/* Problem cards with icons */}
+        {/* Problem cards with workflow animations */}
         <motion.div
           className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-3"
           variants={reduced ? undefined : staggerContainer}
@@ -270,16 +256,16 @@ function Problem() {
           whileInView="visible"
           viewport={viewportOnce}
         >
-          {problemCards.map((card, i) => {
-            const Icon = card.icon
+          {problemCards.map((card) => {
+            const Animation = card.animation
             return (
               <motion.div
                 key={card.title}
                 variants={reduced ? undefined : staggerItem}
                 className="card-glow group p-6 text-center"
               >
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-text-tertiary/10 to-text-tertiary/5 ring-1 ring-border">
-                  <Icon className="h-5 w-5 text-text-secondary" delay={0.3 + i * 0.2} />
+                <div className="mx-auto mb-4 h-16 w-full max-w-[120px]">
+                  <Animation />
                 </div>
                 <p className="text-lg font-semibold text-text-primary">{card.title}</p>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">{card.body}</p>
@@ -292,56 +278,12 @@ function Problem() {
   )
 }
 
-function Metrics() {
-  return (
-    <section className="relative py-16 md:py-20">
-      {/* Ambient glow */}
-      <div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-        aria-hidden="true"
-      >
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[600px] rounded-full opacity-20 blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.3), transparent 70%)" }}
-        />
-      </div>
-
-      <div className="relative mx-auto max-w-5xl px-6">
-        {/* Scan line */}
-        <div className="scan-line rounded-2xl" aria-hidden="true" />
-
-        <FadeIn>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
-            {metrics.map((metric, i) => (
-              <div key={metric.label} className="text-center">
-                <span className="text-4xl font-bold text-gradient-accent md:text-5xl">
-                  <CountUp target={metric.value} suffix={metric.suffix} />
-                </span>
-                <p className="mt-2 text-sm font-medium text-text-primary">{metric.label}</p>
-                <p className="mt-0.5 text-xs text-text-tertiary">{metric.description}</p>
-                {/* Animated accent bar */}
-                <motion.div
-                  className="mx-auto mt-3 h-0.5 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent"
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  whileInView={{ scaleX: 1, opacity: 0.5 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ delay: 0.8 + i * 0.15, duration: 0.6, ease: EASE.smooth }}
-                  style={{ maxWidth: "64px" }}
-                />
-              </div>
-            ))}
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
 
 function Solutions() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="solutions" className="py-16 md:py-24">
+    <section id="solutions" className="py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
@@ -362,8 +304,8 @@ function Solutions() {
           whileInView="visible"
           viewport={viewportOnce}
         >
-          {solutionCards.map((card, i) => {
-            const Icon = card.icon
+          {solutionCards.map((card) => {
+            const Animation = card.animation
             return (
               <motion.div
                 key={card.href}
@@ -379,8 +321,8 @@ function Solutions() {
                   </span>
                 )}
 
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/15 to-accent/5 ring-1 ring-accent/10">
-                  <Icon className="h-5 w-5 text-accent" delay={0.3 + i * 0.2} />
+                <div className="mb-4 h-24 w-full">
+                  <Animation />
                 </div>
 
                 <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-tertiary">{card.subtitle}</p>
@@ -425,52 +367,39 @@ function Solutions() {
 }
 
 function WhySwiftStack() {
-  const reduced = useReducedMotion()
-
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-14 md:py-20">
       <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid items-center gap-12 md:grid-cols-2 md:gap-20">
-          {/* Left: text */}
-          <FadeIn>
-            <div>
-              <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
-              <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-                Purpose-Built by the People Who Know These Workflows
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-text-secondary md:text-lg">
-                We believe operational efficiency unlocks human potential. When
-                your team isn&apos;t buried in repetitive document review,
-                they&apos;re more focused, more alert, and more present for the
-                work that actually requires their judgment.
-              </p>
-            </div>
-          </FadeIn>
+      <div className="relative mx-auto max-w-3xl px-6">
+        <FadeIn>
+          <div className="text-center">
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
+            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+              Why We Build What We Build
+            </h2>
+          </div>
+        </FadeIn>
 
-          {/* Right: checklist */}
-          <motion.div
-            className="space-y-4"
-            variants={reduced ? undefined : staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-          >
-            {whyPoints.map((point, i) => (
-              <motion.div
-                key={point}
-                variants={reduced ? undefined : staggerItem}
-                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/20 hover:shadow-sm"
-              >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10">
-                  <AnimatedCheck delay={i * 0.15} />
-                </div>
-                <p className="text-sm leading-relaxed text-text-primary">{point}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+        <FadeIn delay={0.15}>
+          <div className="mx-auto mt-8 max-w-[700px] space-y-5 text-center">
+            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
+              We believe operational efficiency unlocks human potential. When
+              your team isn&apos;t buried in repetitive document review,
+              they&apos;re more focused, more alert, and more present for the
+              work that actually requires their judgment.
+            </p>
+            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
+              Swift Stack is shaped by the people who live these workflows every
+              day. The documentation, funding, and operations teams who do this
+              work are the ones driving what we build and how we build it.
+            </p>
+            <p className="mt-6 text-sm text-text-tertiary">
+              <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-verified align-middle animate-pulse" />
+              In production with a mid-market Canadian equipment finance lender
+            </p>
+          </div>
+        </FadeIn>
       </div>
     </section>
   )
@@ -478,7 +407,7 @@ function WhySwiftStack() {
 
 function FAQ() {
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-14 md:py-20">
       {/* Dot grid background for texture */}
       <div
         className="bg-dot-grid-fade pointer-events-none absolute inset-0 opacity-40"
@@ -510,7 +439,7 @@ function FAQ() {
 
 function CTA() {
   return (
-    <section id="cta" className="py-16 md:py-24">
+    <section id="cta" className="py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-16 text-center md:px-16 md:py-20">
@@ -525,6 +454,11 @@ function CTA() {
               <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl">
                 Get Started
               </h2>
+
+              <p className="mt-3 text-sm text-gray-400">
+                <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-green-400 align-middle animate-pulse" />
+                In production with a mid-market Canadian equipment finance lender
+              </p>
 
               <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-300 md:text-lg">
                 COI verification is live and in production. Get in touch to see how
@@ -622,7 +556,6 @@ export default function HomePage() {
       <Hero />
       <SectionDivider />
       <Problem />
-      <Metrics />
       <SectionDivider />
       <Solutions />
       <SectionDivider />
