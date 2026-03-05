@@ -1,6 +1,7 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
+import { useState, useRef, useEffect, Fragment } from "react"
+import { motion, useReducedMotion, useInView } from "motion/react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import {
@@ -33,20 +34,21 @@ const solutionCards = [
     subtitle: "COI Verification",
     body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster.",
     href: "/solutions/coi-verification",
-    cta: "Get Started",
-    stats: [
-      { value: 4, suffix: "x", label: "Faster Verification" },
-      { value: 60, suffix: "%", label: "COIs with Deficiencies" },
-    ],
+    primaryCta: "Learn More",
+    secondaryCta: "Get Started",
+    secondaryHref: "#cta",
+    badge: "Live Now",
     gradient: "from-[#2AA0E6]/10 to-transparent",
   },
   {
     animation: LienValidationWorkflow,
     title: "Automated Lien Validation",
     subtitle: "PPSA & UCC Filing Verification",
-    body: "We're building automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package.",
+    body: "Automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package.",
     href: "/solutions/lien-validation",
-    cta: "Join the Waitlist",
+    primaryCta: "Learn More",
+    secondaryCta: "Join the Waitlist",
+    secondaryHref: "#cta",
     badge: "Coming Soon",
     gradient: "from-[#006AAE]/10 to-transparent",
   },
@@ -54,9 +56,11 @@ const solutionCards = [
     animation: DebtorSearchWorkflow,
     title: "Debtor Search Intelligence",
     subtitle: "Registration Analysis",
-    body: "Debtor search results can run hundreds of pages. We're building intelligence that surfaces existing registrations, general security agreements, and blanket liens in minutes.",
+    body: "Debtor search results can run hundreds of pages. Intelligence that surfaces existing registrations, general security agreements, and blanket liens in minutes.",
     href: "/solutions/debtor-search",
-    cta: "Join the Waitlist",
+    primaryCta: "Learn More",
+    secondaryCta: "Join the Waitlist",
+    secondaryHref: "#cta",
     badge: "Coming Soon",
     gradient: "from-[#003263]/10 to-transparent",
   },
@@ -80,6 +84,26 @@ const problemCards = [
   },
 ]
 
+const whyCards = [
+  {
+    title: "Your team handles judgment calls, not data entry",
+    body: "Routine extraction and field comparison is automated. Your people step in for exceptions, edge cases, and the decisions that actually need them.",
+  },
+  {
+    title: "Deal 150 gets the same rigor as deal 1",
+    body: "Manual review quality drops at volume. Automated verification doesn't get tired, skip fields, or rush before end of day.",
+  },
+  {
+    title: "Built with the teams who do this work",
+    body: "Swift Stack is shaped by documentation, funding, and operations teams at equipment finance lenders. Their workflows drive what we build.",
+  },
+]
+
+const ctaSteps = [
+  { number: 1, title: "Analyze", body: "We study your document workflows and verification requirements" },
+  { number: 2, title: "Configure", body: "We set up Swift Stack for your specific deal types and business rules" },
+  { number: 3, title: "Accelerate", body: "Your team processes more deals with fewer missed deficiencies" },
+]
 
 const faqItems = [
   {
@@ -138,16 +162,6 @@ function Hero() {
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-16">
         {/* Text */}
         <div>
-          <motion.div
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5"
-            initial={reduced ? undefined : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: EASE.smooth }}
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-            <span className="text-xs font-medium text-accent">COI Verification is Live</span>
-          </motion.div>
-
           <motion.h1
             className="text-gradient text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
             initial={reduced ? undefined : { opacity: 0, y: 20 }}
@@ -191,7 +205,7 @@ function Hero() {
 
         {/* Animation — floating with glow, no border frame */}
         <motion.div
-          className="relative flex justify-center"
+          className="relative flex flex-col items-center"
           initial={reduced ? undefined : { opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: EASE.smooth, delay: 0.2 }}
@@ -202,21 +216,41 @@ function Hero() {
             style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.1), transparent 70%)" }}
             aria-hidden="true"
           />
-          <div className="relative w-full">
+          <div className="relative w-[90%]">
             <HeroAnimation />
           </div>
+
+          {/* Stats row below animation */}
+          <motion.div
+            className="relative mt-6 flex items-center gap-8 md:gap-12"
+            initial={reduced ? undefined : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.8 }}
+          >
+            <div className="text-center">
+              <span className="text-2xl font-bold text-accent md:text-3xl">
+                <CountUp target={4} suffix="x" />
+              </span>
+              <p className="mt-1 text-xs text-text-secondary">Faster Verification</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div className="text-center">
+              <span className="text-2xl font-bold text-accent md:text-3xl">
+                <CountUp target={60} suffix="%" />
+              </span>
+              <p className="mt-1 text-xs text-text-secondary">COIs with Deficiencies</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div className="text-center">
+              <span className="text-2xl font-bold text-accent md:text-3xl">
+                <CountUp target={150} suffix="+" />
+              </span>
+              <p className="mt-1 text-xs text-text-secondary">Deals Verified</p>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* Credibility line */}
-      <motion.p
-        className="relative mt-16 text-center text-sm text-text-tertiary"
-        initial={reduced ? undefined : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-      >
-        Purpose-built for equipment finance lenders in Canada and the US
-      </motion.p>
     </section>
   )
 }
@@ -279,6 +313,73 @@ function Problem() {
 }
 
 
+function SolutionCard({ card }: { card: typeof solutionCards[number] }) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [entryPlay, setEntryPlay] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(cardRef, { once: true, amount: 0.3 })
+
+  useEffect(() => {
+    if (inView) {
+      setEntryPlay(true)
+      const timer = setTimeout(() => setEntryPlay(false), 2500)
+      return () => clearTimeout(timer)
+    }
+  }, [inView])
+
+  const play = entryPlay || isHovered
+  const Animation = card.animation
+
+  return (
+    <div
+      ref={cardRef}
+      className="card-shimmer group relative flex h-full flex-col p-6"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Gradient accent at top */}
+      <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient} z-10`} />
+
+      {card.badge && (
+        <span className="absolute top-4 right-4 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+          {card.badge}
+        </span>
+      )}
+
+      <div className="mb-4 h-24 w-full">
+        <Animation play={play} />
+      </div>
+
+      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-tertiary">{card.subtitle}</p>
+      <h3 className="text-xl font-semibold text-text-primary">
+        {card.title}
+      </h3>
+
+      <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+        {card.body}
+      </p>
+
+      {/* CTAs — Learn More primary, secondary below */}
+      <div className="mt-auto flex flex-col gap-2 pt-6">
+        <Link
+          href={card.href}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-all duration-200 hover:gap-2.5"
+        >
+          {card.primaryCta}
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+        <Link
+          href={card.secondaryHref}
+          className="inline-flex items-center gap-1 text-xs text-text-tertiary transition-colors duration-200 hover:text-accent"
+        >
+          {card.secondaryCta}
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 function Solutions() {
   const reduced = useReducedMotion()
 
@@ -304,62 +405,15 @@ function Solutions() {
           whileInView="visible"
           viewport={viewportOnce}
         >
-          {solutionCards.map((card) => {
-            const Animation = card.animation
-            return (
-              <motion.div
-                key={card.href}
-                variants={reduced ? undefined : staggerItem}
-                className="card-shimmer group relative p-6"
-              >
-                {/* Gradient accent at top */}
-                <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient} z-10`} />
-
-                {card.badge && (
-                  <span className="absolute top-4 right-4 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                    {card.badge}
-                  </span>
-                )}
-
-                <div className="mb-4 h-24 w-full">
-                  <Animation />
-                </div>
-
-                <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-tertiary">{card.subtitle}</p>
-                <h3 className="text-xl font-semibold text-text-primary">
-                  {card.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                  {card.body}
-                </p>
-
-                {/* Stats */}
-                {card.stats && (
-                  <div className="mt-6 flex gap-8 border-t border-border pt-5">
-                    {card.stats.map((stat) => (
-                      <div key={stat.label}>
-                        <span className="text-3xl font-bold text-gradient-accent">
-                          <CountUp target={stat.value} suffix={stat.suffix} />
-                        </span>
-                        <p className="mt-1 text-xs text-text-secondary">
-                          {stat.label}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <Link
-                  href={card.href}
-                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-all duration-200 hover:gap-2.5"
-                >
-                  {card.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </motion.div>
-            )
-          })}
+          {solutionCards.map((card) => (
+            <motion.div
+              key={card.href}
+              variants={reduced ? undefined : staggerItem}
+              className="flex"
+            >
+              <SolutionCard card={card} />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>
@@ -367,39 +421,47 @@ function Solutions() {
 }
 
 function WhySwiftStack() {
+  const reduced = useReducedMotion()
+
   return (
     <section className="relative py-14 md:py-20">
       <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-3xl px-6">
-        <FadeIn>
-          <div className="text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
-            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-              Why We Build What We Build
-            </h2>
-          </div>
-        </FadeIn>
+      <div className="relative mx-auto max-w-6xl px-6">
+        <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:items-start md:gap-16">
+          {/* Left: heading */}
+          <FadeIn>
+            <div>
+              <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
+              <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+                Operational Efficiency Unlocks Human Potential
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-text-secondary">
+                Shaped by the documentation, funding, and operations teams who live these workflows every day.
+              </p>
+            </div>
+          </FadeIn>
 
-        <FadeIn delay={0.15}>
-          <div className="mx-auto mt-8 max-w-[700px] space-y-5 text-center">
-            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
-              We believe operational efficiency unlocks human potential. When
-              your team isn&apos;t buried in repetitive document review,
-              they&apos;re more focused, more alert, and more present for the
-              work that actually requires their judgment.
-            </p>
-            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
-              Swift Stack is shaped by the people who live these workflows every
-              day. The documentation, funding, and operations teams who do this
-              work are the ones driving what we build and how we build it.
-            </p>
-            <p className="mt-6 text-sm text-text-tertiary">
-              <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-verified align-middle animate-pulse" />
-              In production with a mid-market Canadian equipment finance lender
-            </p>
-          </div>
-        </FadeIn>
+          {/* Right: slim wide cards */}
+          <motion.div
+            className="flex flex-col gap-4"
+            variants={reduced ? undefined : staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+          >
+            {whyCards.map((card) => (
+              <motion.div
+                key={card.title}
+                variants={reduced ? undefined : staggerItem}
+                className="card-glow rounded-xl border border-border px-5 py-4"
+              >
+                <h3 className="text-sm font-semibold text-text-primary">{card.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-text-secondary">{card.body}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -437,6 +499,68 @@ function FAQ() {
   )
 }
 
+function CTASteps() {
+  const [activeStep, setActiveStep] = useState(-1)
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.3 })
+
+  useEffect(() => {
+    if (!inView) return
+    // Play once: advance through steps, then stop at the end
+    let step = -1
+    const interval = setInterval(() => {
+      step += 1
+      setActiveStep(step)
+      if (step >= 2) clearInterval(interval)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [inView])
+
+  return (
+    <div ref={ref} className="mx-auto mt-10 max-w-2xl">
+      {/* Step circles + connectors + text aligned together */}
+      <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-0">
+        {ctaSteps.map((step, i) => (
+          <Fragment key={i}>
+            {/* Step column: circle + text */}
+            <div className="flex flex-col items-center">
+              <motion.div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold"
+                animate={{
+                  borderColor: i <= activeStep ? "rgba(42, 160, 230, 1)" : "rgba(255, 255, 255, 0.15)",
+                  backgroundColor: i <= activeStep ? "rgba(42, 160, 230, 0.15)" : "transparent",
+                  color: i <= activeStep ? "#4DB8F0" : "rgba(255, 255, 255, 0.4)",
+                }}
+                transition={{ duration: 0.4, ease: EASE.smooth }}
+              >
+                {step.number}
+              </motion.div>
+              <motion.div
+                className="mt-3 max-w-[160px] text-center"
+                animate={{ opacity: i <= activeStep ? 1 : 0.3 }}
+                transition={{ duration: 0.4 }}
+              >
+                <p className="text-sm font-medium text-white">{step.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-gray-400">{step.body}</p>
+              </motion.div>
+            </div>
+            {/* Connector line between steps */}
+            {i < ctaSteps.length - 1 && (
+              <div className="relative mx-3 mt-5 h-px flex-1 min-w-[40px] bg-white/10 self-start">
+                <motion.div
+                  className="absolute inset-y-0 left-0 h-px bg-accent"
+                  animate={{ width: activeStep > i ? "100%" : "0%" }}
+                  transition={{ duration: 0.6, ease: EASE.smooth }}
+                />
+              </div>
+            )}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function CTA() {
   return (
     <section id="cta" className="py-14 md:py-20">
@@ -455,31 +579,12 @@ function CTA() {
                 Get Started
               </h2>
 
-              <p className="mt-3 text-sm text-gray-400">
-                <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-green-400 align-middle animate-pulse" />
-                In production with a mid-market Canadian equipment finance lender
-              </p>
-
               <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-300 md:text-lg">
                 COI verification is live and in production. Get in touch to see how
                 Swift Stack fits into your document verification workflow.
               </p>
 
-              <div className="mx-auto mt-10 grid max-w-lg gap-4 text-left sm:grid-cols-3">
-                {[
-                  { title: "See it in action", body: "Walk through your specific workflows" },
-                  { title: "Launch pricing", body: "Introductory rates available now" },
-                  { title: "Configured for you", body: "Set up for your deal types" },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-xl border border-white/10 bg-white/5 p-4 transition-colors duration-300 hover:border-white/20 hover:bg-white/8"
-                  >
-                    <p className="text-sm font-medium text-white">{item.title}</p>
-                    <p className="mt-1 text-xs text-gray-400">{item.body}</p>
-                  </div>
-                ))}
-              </div>
+              <CTASteps />
 
               {/* Email form */}
               <form
@@ -500,31 +605,7 @@ function CTA() {
                 </button>
               </form>
 
-              {/* CASL consent */}
-              <div className="mx-auto mt-4 max-w-md">
-                <label className="flex items-start gap-3 text-left">
-                  <input
-                    type="checkbox"
-                    required
-                    className="mt-1 h-4 w-4 shrink-0 rounded border-gray-600 bg-white/5 text-accent focus:ring-2 focus:ring-accent/30 focus:ring-offset-0"
-                  />
-                  <span className="text-xs leading-relaxed text-gray-400">
-                    I agree to receive emails from Swift Stack Solutions about
-                    product updates, launch announcements, and related company
-                    communications.
-                  </span>
-                </label>
-                <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                  You can withdraw your consent at any time by clicking the
-                  unsubscribe link in any email or by contacting{" "}
-                  <a href="mailto:hello@swiftstacksolutions.com" className="underline hover:text-gray-400">
-                    hello@swiftstacksolutions.com
-                  </a>
-                  . Swift Stack Solutions, swiftstacksolutions.com.
-                </p>
-              </div>
-
-              <p className="mt-8 text-sm text-gray-400">
+              <p className="mt-6 text-sm text-gray-400">
                 Or email us directly:{" "}
                 <a
                   href="mailto:hello@swiftstacksolutions.com"
