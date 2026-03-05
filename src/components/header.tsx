@@ -33,10 +33,10 @@ export function Header() {
 
   return (
     <header
-      className={`header-glass fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-border/50 bg-surface/80 shadow-sm"
-          : "bg-transparent"
+          ? "border-b border-border/50 bg-surface shadow-sm"
+          : "bg-surface"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -124,7 +124,7 @@ export function Header() {
             Log In
           </Link>
           <Link
-            href="#cta"
+            href="/contact"
             className="btn-primary inline-flex items-center justify-center px-5 py-2.5 text-sm"
           >
             Get Started
@@ -191,7 +191,7 @@ export function Header() {
                   <Link href="#" className="text-base text-text-secondary hover:text-text-primary" onClick={() => setMobileOpen(false)}>Log In</Link>
 
                   <Link
-                    href="#cta"
+                    href="/contact"
                     className="btn-primary mt-4 inline-flex items-center justify-center px-5 py-3 text-base"
                     onClick={() => setMobileOpen(false)}
                   >

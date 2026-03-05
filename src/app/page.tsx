@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, Fragment } from "react"
 import { motion, useReducedMotion, useInView } from "motion/react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Linkedin } from "lucide-react"
+import Image from "next/image"
 import {
   ManualWorkflow,
   RepetitiveWorkflow,
@@ -36,7 +37,7 @@ const solutionCards = [
     href: "/solutions/coi-verification",
     primaryCta: "Learn More",
     secondaryCta: "Get Started",
-    secondaryHref: "#cta",
+    secondaryHref: "/contact",
     badge: "Live Now",
     gradient: "from-[#2AA0E6]/10 to-transparent",
   },
@@ -48,7 +49,7 @@ const solutionCards = [
     href: "/solutions/lien-validation",
     primaryCta: "Learn More",
     secondaryCta: "Join the Waitlist",
-    secondaryHref: "#cta",
+    secondaryHref: "/contact",
     badge: "Coming Soon",
     gradient: "from-[#006AAE]/10 to-transparent",
   },
@@ -60,7 +61,7 @@ const solutionCards = [
     href: "/solutions/debtor-search",
     primaryCta: "Learn More",
     secondaryCta: "Join the Waitlist",
-    secondaryHref: "#cta",
+    secondaryHref: "/contact",
     badge: "Coming Soon",
     gradient: "from-[#003263]/10 to-transparent",
   },
@@ -84,18 +85,20 @@ const problemCards = [
   },
 ]
 
-const whyCards = [
+const teamMembers = [
   {
-    title: "Your team handles judgment calls, not data entry",
-    body: "Routine extraction and field comparison is automated. Your people step in for exceptions, edge cases, and the decisions that actually need them.",
+    name: "Your Name",
+    title: "Co-Founder & CEO",
+    photo: "/team/placeholder-1.jpg",
+    linkedin: "https://linkedin.com/in/yourprofile",
+    bio: "Background in equipment finance operations with experience leading documentation and funding teams. Built Swift Stack to solve the verification bottleneck that slows down every deal.",
   },
   {
-    title: "Deal 150 gets the same rigor as deal 1",
-    body: "Manual review quality drops at volume. Automated verification doesn't get tired, skip fields, or rush before end of day.",
-  },
-  {
-    title: "Built with the teams who do this work",
-    body: "Swift Stack is shaped by documentation, funding, and operations teams at equipment finance lenders. Their workflows drive what we build.",
+    name: "Coworker Name",
+    title: "Co-Founder & CTO",
+    photo: "/team/placeholder-2.jpg",
+    linkedin: "https://linkedin.com/in/coworkerprofile",
+    bio: "Engineering background with deep expertise in document intelligence and AI systems. Designed the verification engine that powers Swift Stack's field-level comparison and deficiency detection.",
   },
 ]
 
@@ -139,7 +142,7 @@ function Hero() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-16 md:pt-40 md:pb-24">
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-28 pb-16 md:pt-40 md:pb-24">
       {/* Dot grid background */}
       <div
         className="bg-dot-grid-fade pointer-events-none absolute inset-0"
@@ -168,7 +171,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.1 }}
           >
-            Pre-Funding Document Verification for Equipment Finance
+            Document Intelligence for Equipment Finance
           </motion.h1>
 
           <motion.p
@@ -177,7 +180,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.2 }}
           >
-            Automate the document checks between approval and payout. Less
+            Automate the pre-funding document checks between approval and payout. Less
             manual review. Fewer missed deficiencies. Faster funding.
           </motion.p>
 
@@ -188,7 +191,7 @@ function Hero() {
             transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.3 }}
           >
             <Link
-              href="#cta"
+              href="/contact"
               className="btn-primary inline-flex items-center justify-center px-7 py-3.5 text-sm"
             >
               Get Started
@@ -259,7 +262,7 @@ function Problem() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative py-14 md:py-20">
+    <section className="relative flex min-h-screen flex-col justify-center py-14 md:py-20">
       {/* Subtle background tint */}
       <div className="absolute inset-0 bg-surface-alt/50" aria-hidden="true" />
 
@@ -341,12 +344,18 @@ function SolutionCard({ card }: { card: typeof solutionCards[number] }) {
       <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient} z-10`} />
 
       {card.badge && (
-        <span className="absolute top-4 right-4 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+        <span className={`absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${card.badge === "Live Now" ? "bg-verified/10 text-verified" : "bg-accent/10 text-accent"}`}>
+          {card.badge === "Live Now" && (
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-verified opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-verified" />
+            </span>
+          )}
           {card.badge}
         </span>
       )}
 
-      <div className="mb-4 h-24 w-full">
+      <div className="mb-4 h-40 w-full">
         <Animation play={play} />
       </div>
 
@@ -384,7 +393,7 @@ function Solutions() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="solutions" className="py-14 md:py-20">
+    <section id="solutions" className="flex min-h-screen flex-col justify-center py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
@@ -420,48 +429,102 @@ function Solutions() {
   )
 }
 
-function WhySwiftStack() {
+function AboutSwiftStack() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative py-14 md:py-20">
+    <section className="relative flex min-h-screen flex-col justify-center py-14 md:py-20">
       <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-6xl px-6">
-        <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:items-start md:gap-16">
-          {/* Left: heading */}
-          <FadeIn>
-            <div>
-              <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
-              <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-                Operational Efficiency Unlocks Human Potential
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-text-secondary">
-                Shaped by the documentation, funding, and operations teams who live these workflows every day.
-              </p>
-            </div>
-          </FadeIn>
+      <div className="relative mx-auto max-w-5xl px-6">
+        <FadeIn>
+          <div className="text-center">
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">About Swift Stack</p>
+            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+              Built by People Who Know This Work
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-text-secondary">
+              Swift Stack was built alongside the documentation, funding, and operations teams who live these workflows every day.
+            </p>
+          </div>
+        </FadeIn>
 
-          {/* Right: slim wide cards */}
-          <motion.div
-            className="flex flex-col gap-4"
-            variants={reduced ? undefined : staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={viewportOnce}
-          >
-            {whyCards.map((card) => (
-              <motion.div
-                key={card.title}
-                variants={reduced ? undefined : staggerItem}
-                className="card-glow rounded-xl border border-border px-5 py-4"
+        <motion.div
+          className="mt-12 grid gap-8 md:grid-cols-2"
+          variants={reduced ? undefined : staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
+          {teamMembers.map((member) => (
+            <motion.div
+              key={member.name}
+              variants={reduced ? undefined : staggerItem}
+              className="card-glow flex flex-col items-center rounded-2xl border border-border p-8 text-center"
+            >
+              <div className="mb-4 h-24 w-24 overflow-hidden rounded-full border-2 border-border bg-surface-alt">
+                <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-text-tertiary">
+                  {member.name.split(" ").map(n => n[0]).join("")}
+                </div>
+              </div>
+              <h3 className="text-lg font-semibold text-text-primary">{member.name}</h3>
+              <p className="text-sm font-medium text-accent">{member.title}</p>
+              <p className="mt-3 text-sm leading-relaxed text-text-secondary">{member.bio}</p>
+              <a
+                href={member.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-text-tertiary transition-colors duration-200 hover:text-accent"
               >
-                <h3 className="text-sm font-semibold text-text-primary">{card.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-text-secondary">{card.body}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+                <Linkedin className="h-4 w-4" />
+                LinkedIn
+              </a>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+const testimonials = [
+  {
+    quote: "Swift Stack cut our COI review time by 75%. What used to take our team hours of manual checking now happens in minutes, with higher accuracy than we ever achieved by hand.",
+    name: "Placeholder Name",
+    title: "VP Operations",
+    company: "Mid-Market Equipment Finance Lender",
+  },
+]
+
+function Testimonials() {
+  return (
+    <section className="relative py-14 md:py-20">
+      <div className="mx-auto max-w-4xl px-6">
+        <FadeIn>
+          <div className="text-center">
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">What Our Clients Say</p>
+          </div>
+        </FadeIn>
+
+        <FadeIn>
+          <div className="mt-8 rounded-2xl border border-border bg-surface p-8 md:p-12">
+            <svg className="mb-6 h-8 w-8 text-accent opacity-40" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
+            </svg>
+            <blockquote className="text-lg leading-relaxed text-text-primary md:text-xl">
+              {testimonials[0].quote}
+            </blockquote>
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
+                {testimonials[0].name.split(" ").map(n => n[0]).join("")}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">{testimonials[0].name}</p>
+                <p className="text-sm text-text-secondary">{testimonials[0].title}, {testimonials[0].company}</p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   )
@@ -563,8 +626,8 @@ function CTASteps() {
 
 function CTA() {
   return (
-    <section id="cta" className="py-14 md:py-20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section id="cta" className="flex min-h-screen flex-col justify-center py-14 md:py-20">
+      <div className="mx-auto w-full max-w-7xl px-6">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-16 text-center md:px-16 md:py-20">
             {/* Ambient glow inside CTA */}
@@ -586,24 +649,15 @@ function CTA() {
 
               <CTASteps />
 
-              {/* Email form */}
-              <form
-                className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <input
-                  type="email"
-                  placeholder="Work email"
-                  required
-                  className="flex-1 rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white placeholder-gray-500 outline-none transition-all duration-200 focus:border-accent focus:bg-white/10 focus:ring-2 focus:ring-accent/20"
-                />
-                <button
-                  type="submit"
-                  className="btn-primary rounded-xl px-7 py-3.5 text-sm"
+              <div className="mt-10">
+                <Link
+                  href="/contact"
+                  className="btn-primary inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm"
                 >
                   Get Started
-                </button>
-              </form>
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </div>
 
               <p className="mt-6 text-sm text-gray-400">
                 Or email us directly:{" "}
@@ -640,7 +694,9 @@ export default function HomePage() {
       <SectionDivider />
       <Solutions />
       <SectionDivider />
-      <WhySwiftStack />
+      <AboutSwiftStack />
+      <SectionDivider />
+      <Testimonials />
       <SectionDivider />
       <FAQ />
       <CTA />
