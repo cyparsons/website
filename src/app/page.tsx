@@ -143,9 +143,9 @@ function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-28 pb-16 md:pt-40 md:pb-24">
-      {/* Dot grid background */}
+      {/* Line grid background */}
       <div
-        className="bg-dot-grid-fade pointer-events-none absolute inset-0"
+        className="bg-line-grid-fade pointer-events-none absolute inset-0"
         aria-hidden="true"
       />
       {/* Radial fade to mask grid edges */}
@@ -221,36 +221,18 @@ function Hero() {
           />
           <div className="relative w-[90%]">
             <HeroAnimation />
-          </div>
 
-          {/* Stats row below animation */}
-          <motion.div
-            className="relative mt-6 flex items-center gap-8 md:gap-12"
-            initial={reduced ? undefined : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.8 }}
-          >
-            <div className="text-center">
-              <span className="text-2xl font-bold text-accent md:text-3xl">
-                <CountUp target={4} suffix="x" />
-              </span>
-              <p className="mt-1 text-xs text-text-secondary">Faster Verification</p>
-            </div>
-            <div className="h-8 w-px bg-border" />
-            <div className="text-center">
-              <span className="text-2xl font-bold text-accent md:text-3xl">
-                <CountUp target={60} suffix="%" />
-              </span>
-              <p className="mt-1 text-xs text-text-secondary">COIs with Deficiencies</p>
-            </div>
-            <div className="h-8 w-px bg-border" />
-            <div className="text-center">
-              <span className="text-2xl font-bold text-accent md:text-3xl">
-                <CountUp target={150} suffix="+" />
-              </span>
-              <p className="mt-1 text-xs text-text-secondary">Deals Verified</p>
-            </div>
-          </motion.div>
+            {/* Stat below animation */}
+            <motion.p
+              className="relative mt-4 text-2xl text-text-secondary md:text-3xl"
+              initial={reduced ? undefined : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EASE.smooth, delay: 4.5 }}
+            >
+              <span className="font-bold text-accent"><CountUp target={4} suffix="x" /></span>{" "}
+              Faster Verification
+            </motion.p>
+          </div>
         </motion.div>
       </div>
 
@@ -695,9 +677,9 @@ export default function HomePage() {
       <Solutions />
       <SectionDivider />
       <AboutSwiftStack />
-      <SectionDivider />
+      {/* <SectionDivider />
       <Testimonials />
-      <SectionDivider />
+      <SectionDivider /> */}
       <FAQ />
       <CTA />
     </>

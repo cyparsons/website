@@ -173,7 +173,7 @@ html {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: #003263;
+  background: linear-gradient(135deg, #005A9E, #003D6B);
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -202,6 +202,14 @@ html {
 .bg-dot-grid-fade {
   background-image: radial-gradient(circle, rgba(42, 160, 230, 0.15) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/* Line grid (hero use) */
+.bg-line-grid-fade {
+  background-image:
+    linear-gradient(to right, rgba(42, 160, 230, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(42, 160, 230, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 /* Glass header */

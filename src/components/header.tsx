@@ -35,8 +35,8 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-border/50 bg-surface shadow-sm"
-          : "bg-surface"
+          ? "border-b border-border/50 bg-surface/80 backdrop-blur-xl shadow-sm"
+          : "bg-transparent"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
