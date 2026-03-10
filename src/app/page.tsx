@@ -15,7 +15,6 @@ import {
 } from "@/components/workflow-animations"
 import { HeroAnimation } from "@/components/hero-animation"
 import { FadeIn } from "@/components/fade-in"
-import { CountUp } from "@/components/count-up"
 import { Accordion } from "@/components/accordion"
 import { FAQSchema } from "@/components/schema"
 import { AnimatedDivider } from "@/components/animated-divider"
@@ -33,7 +32,7 @@ const solutionCards = [
     animation: COIVerificationWorkflow,
     title: "Smarter Insurance Reviews",
     subtitle: "COI Verification",
-    body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster.",
+    body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster, saving hundreds of hours every month.",
     href: "/solutions/coi-verification",
     primaryCta: "Learn More",
     secondaryCta: "Get Started",
@@ -45,7 +44,7 @@ const solutionCards = [
     animation: LienValidationWorkflow,
     title: "Automated Lien Validation",
     subtitle: "PPSA & UCC Filing Verification",
-    body: "Automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package.",
+    body: "We're building automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package before they go out.",
     href: "/solutions/lien-validation",
     primaryCta: "Learn More",
     secondaryCta: "Join the Waitlist",
@@ -57,7 +56,7 @@ const solutionCards = [
     animation: DebtorSearchWorkflow,
     title: "Debtor Search Intelligence",
     subtitle: "Registration Analysis",
-    body: "Debtor search results can run hundreds of pages. Intelligence that surfaces existing registrations, general security agreements, and blanket liens in minutes.",
+    body: "Debtor search results can run hundreds of pages. We're building intelligence that cuts through the volume, surfacing existing registrations, general security agreements, and blanket liens so your team can assess the full picture in minutes instead of hours.",
     href: "/solutions/debtor-search",
     primaryCta: "Learn More",
     secondaryCta: "Join the Waitlist",
@@ -71,7 +70,7 @@ const problemCards = [
   {
     animation: ManualWorkflow,
     title: "Manual",
-    body: "Field-by-field PDF review on every deal. Your team opens documents, reads line by line, and cross-references by hand.",
+    body: "Your team opens PDFs, reads fields line by line, and cross-references data against deal requirements by hand.",
   },
   {
     animation: RepetitiveWorkflow,
@@ -103,9 +102,9 @@ const teamMembers = [
 ]
 
 const ctaSteps = [
-  { number: 1, title: "Analyze", body: "We study your document workflows and verification requirements" },
-  { number: 2, title: "Configure", body: "We set up Swift Stack for your specific deal types and business rules" },
-  { number: 3, title: "Accelerate", body: "Your team processes more deals with fewer missed deficiencies" },
+  { number: 1, title: "Analyze", body: "We review your workflows\nand verification needs" },
+  { number: 2, title: "Configure", body: "Set up for your deal types\nand document rules" },
+  { number: 3, title: "Accelerate", body: "Automated verification\nrunning on your documents" },
 ]
 
 const faqItems = [
@@ -221,17 +220,6 @@ function Hero() {
           />
           <div className="relative w-[90%]">
             <HeroAnimation />
-
-            {/* Stat below animation */}
-            <motion.p
-              className="relative mt-4 text-2xl text-text-secondary md:text-3xl"
-              initial={reduced ? undefined : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: EASE.smooth, delay: 4.5 }}
-            >
-              <span className="font-bold text-accent"><CountUp target={4} suffix="x" /></span>{" "}
-              Faster Verification
-            </motion.p>
           </div>
         </motion.div>
       </div>
@@ -244,7 +232,7 @@ function Problem() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative flex min-h-screen flex-col justify-center py-14 md:py-20">
+    <section className="relative py-20 md:py-28">
       {/* Subtle background tint */}
       <div className="absolute inset-0 bg-surface-alt/50" aria-hidden="true" />
 
@@ -260,10 +248,7 @@ function Problem() {
 
         <FadeIn delay={0.15}>
           <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-text-secondary md:text-lg">
-            Between deal approval and funding, your documentation team
-            manually verifies every document in the deal package. They open
-            PDFs, read fields line by line, cross-reference data against deal
-            requirements, and flag issues by hand.
+            Between deal approval and funding, your documentation team manually verifies every document in the deal package. The rules are clear, but the work adds up.
           </p>
         </FadeIn>
 
@@ -341,7 +326,6 @@ function SolutionCard({ card }: { card: typeof solutionCards[number] }) {
         <Animation play={play} />
       </div>
 
-      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-tertiary">{card.subtitle}</p>
       <h3 className="text-xl font-semibold text-text-primary">
         {card.title}
       </h3>
@@ -350,21 +334,22 @@ function SolutionCard({ card }: { card: typeof solutionCards[number] }) {
         {card.body}
       </p>
 
-      {/* CTAs — Learn More primary, secondary below */}
+      {/* CTAs — Action primary, Learn More secondary */}
       <div className="mt-auto flex flex-col gap-2 pt-6">
         <Link
-          href={card.href}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-all duration-200 hover:gap-2.5"
-        >
-          {card.primaryCta}
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-        <Link
           href={card.secondaryHref}
-          className="inline-flex items-center gap-1 text-xs text-text-tertiary transition-colors duration-200 hover:text-accent"
+          className="cta-arrow inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors duration-200 hover:text-accent-hover"
         >
           {card.secondaryCta}
-          <ArrowRight className="h-3 w-3" />
+          <span className="inline-flex transition-transform duration-200">
+            <ArrowRight className="h-4 w-4" />
+          </span>
+        </Link>
+        <Link
+          href={card.href}
+          className="text-xs text-text-tertiary transition-colors duration-200 hover:text-accent"
+        >
+          {card.primaryCta}
         </Link>
       </div>
     </div>
@@ -375,7 +360,7 @@ function Solutions() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="solutions" className="flex min-h-screen flex-col justify-center py-20 md:py-28">
+    <section id="solutions" className="py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
@@ -383,9 +368,6 @@ function Solutions() {
             <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
               Built for Equipment Finance Workflows
             </h2>
-            <p className="mt-4 text-base text-text-secondary md:text-lg">
-              Three products. One platform. Every document check between approval and payout.
-            </p>
           </div>
         </FadeIn>
 
@@ -469,6 +451,36 @@ function AboutSwiftStack() {
   )
 }
 
+function WhySwiftStack() {
+  return (
+    <section className="relative py-16 md:py-24">
+      <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
+
+      <div className="relative mx-auto max-w-3xl px-6">
+        <FadeIn>
+          <div className="text-center">
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
+            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+              Why We Build What We Build
+            </h2>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.15}>
+          <div className="mt-8 space-y-6 text-center">
+            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
+              We believe operational efficiency unlocks human potential. When your team isn&apos;t buried in repetitive document review, they&apos;re more focused, more alert, and more present for the work that actually requires their judgment.
+            </p>
+            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
+              Swift Stack is shaped by the people who live these workflows every day. The documentation, funding, and operations teams who do this work are the ones driving what we build and how we build it.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
 const testimonials = [
   {
     quote: "Swift Stack cut our COI review time by 75%. What used to take our team hours of manual checking now happens in minutes, with higher accuracy than we ever achieved by hand.",
@@ -514,7 +526,7 @@ function Testimonials() {
 
 function FAQ() {
   return (
-    <section className="relative py-14 md:py-20">
+    <section className="relative py-20 md:py-28">
       {/* Dot grid background for texture */}
       <div
         className="bg-dot-grid-fade pointer-events-none absolute inset-0 opacity-40"
@@ -581,12 +593,12 @@ function CTASteps() {
                 {step.number}
               </motion.div>
               <motion.div
-                className="mt-3 max-w-[160px] text-center"
+                className="mt-3 max-w-[200px] text-center"
                 animate={{ opacity: i <= activeStep ? 1 : 0.3 }}
                 transition={{ duration: 0.4 }}
               >
                 <p className="text-sm font-medium text-white">{step.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-gray-400">{step.body}</p>
+                <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-400">{step.body}</p>
               </motion.div>
             </div>
             {/* Connector line between steps */}
@@ -608,7 +620,7 @@ function CTASteps() {
 
 function CTA() {
   return (
-    <section id="cta" className="flex min-h-screen flex-col justify-center py-14 md:py-20">
+    <section id="cta" className="py-16 md:py-24">
       <div className="mx-auto w-full max-w-7xl px-6">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-16 text-center md:px-16 md:py-20">
@@ -625,8 +637,7 @@ function CTA() {
               </h2>
 
               <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-300 md:text-lg">
-                COI verification is live and in production. Get in touch to see how
-                Swift Stack fits into your document verification workflow.
+                COI verification is live and in production. Lien validation and debtor search intelligence are on the way. Get in touch to see how Swift Stack fits into your document verification workflow.
               </p>
 
               <CTASteps />
@@ -675,8 +686,10 @@ export default function HomePage() {
       <Problem />
       <SectionDivider />
       <Solutions />
+      {/* <SectionDivider />
+      <AboutSwiftStack /> */}
       <SectionDivider />
-      <AboutSwiftStack />
+      <WhySwiftStack />
       {/* <SectionDivider />
       <Testimonials />
       <SectionDivider /> */}
