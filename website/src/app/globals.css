@@ -17,7 +17,7 @@
   /* Light mode text */
   --color-text-primary: #0F172A;
   --color-text-secondary: #64748B;
-  --color-text-tertiary: #94A3B8;
+  --color-text-tertiary: #64748B;
 
   /* Semantic */
   --color-verified: #22C55E;
@@ -45,7 +45,7 @@
 
   --color-text-primary: #F1F5F9;
   --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #64748B;
+  --color-text-tertiary: #475569;
 
   --color-verified: #4ADE80;
   --color-verified-light: rgba(74, 222, 128, 0.1);
@@ -92,10 +92,11 @@ html {
 
 /* Gradient text */
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-text-primary) 40%, var(--color-text-secondary));
+  background: linear-gradient(135deg, var(--color-text-primary) 60%, var(--color-text-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-bottom: 0.1em;
 }
 
 .text-gradient-accent {

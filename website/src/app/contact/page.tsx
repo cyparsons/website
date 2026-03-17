@@ -118,11 +118,11 @@ export default function ContactPage() {
               <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">
                 Get Started
               </p>
-              <h1 className="text-gradient text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                Let&apos;s talk about your workflow
+              <h1 className="text-3xl font-bold tracking-tight text-text-primary md:text-4xl lg:text-5xl pb-1">
+                From Every Field to Just Exceptions
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-text-secondary">
-                Whether you&apos;re reviewing COIs, validating liens, or managing document workflows at scale, we can help your team move faster with fewer misses.
+                Whether you&apos;re managing COI reviews across multi-asset deals, handling renewal volumes, or looking to reduce deficiencies before funding, we can help your team move faster with fewer misses.
               </p>
               <p className="mt-4 text-base leading-relaxed text-text-tertiary">
                 Not sure if we&apos;re the right fit? We&apos;re always happy to chat about document verification, AI in financial operations, or where this space is headed. No pitch required.
@@ -283,7 +283,7 @@ export default function ContactPage() {
                       name="message"
                       rows={4}
                       className="w-full resize-none rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                      placeholder="Tell us about your workflow or what you're exploring"
+                      placeholder="Tell us about your COI review process, deal volume, or what you're looking to improve"
                     />
                   </div>
 

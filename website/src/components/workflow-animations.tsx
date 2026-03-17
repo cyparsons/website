@@ -203,19 +203,21 @@ export function IngestAnimation() {
             <rect x={-90} y={doc.y + 4} width="90" height="16" rx="8" fill="url(#trail)" />
             {/* Document body */}
             <rect x={0} y={doc.y} width="30" height="40" rx="3"
-              fill="white" stroke="#006AAE" strokeWidth="1.2" />
+              fill="white" stroke="#006AAE" strokeWidth="1" />
             {/* Corner fold */}
-            <path d={`M22 ${doc.y} L22 ${doc.y + 7} L30 ${doc.y + 7}`} fill="#D6EDFB" />
-            <path d={`M22 ${doc.y} L30 ${doc.y + 7}`} stroke="#006AAE" strokeWidth="0.6" opacity="0.4" />
-            {/* Header bar */}
-            <rect x={4} y={doc.y + 4} width={doc.header} height="2.5" rx="1.2" fill="#003263" opacity="0.7" />
-            {/* Field rows: label + value pair per row */}
+            <path d={`M22 ${doc.y} L22 ${doc.y + 6} L30 ${doc.y + 6}`} fill="#D6EDFB" />
+            <path d={`M22 ${doc.y} L30 ${doc.y + 6}`} stroke="#006AAE" strokeWidth="0.5" opacity="0.4" />
+            {/* ACORD-style header */}
+            <rect x={0} y={doc.y} width="30" height="8" rx="3" fill="#003263" />
+            <rect x={0} y={doc.y + 3} width="30" height="5" fill="#003263" />
+            <text x={3} y={doc.y + 6} fontSize="3.5" fontWeight="700" fill="white" fontFamily="var(--font-sans)">ACORD</text>
+            {/* Field rows */}
             {doc.fields.map(([labelW, valueW], fi) => {
-              const fy = doc.y + 11 + fi * 7
+              const fy = doc.y + 13 + fi * 7
               return (
                 <g key={fi}>
-                  <rect x={4} y={fy} width={labelW} height="2" rx="1" fill="#003263" opacity="0.15" />
-                  <rect x={4} y={fy + 3} width={valueW} height="1.5" rx="0.75" fill="#006AAE" opacity="0.2" />
+                  <rect x={4} y={fy} width={labelW} height="2" rx="1" fill="var(--color-border)" opacity="0.3" />
+                  <rect x={4} y={fy + 3} width={valueW} height="1.5" rx="0.75" fill="var(--color-border)" opacity="0.2" />
                 </g>
               )
             })}
@@ -397,8 +399,8 @@ export function AnalyzeAnimation() {
   return (
     <svg ref={ref} viewBox="0 0 360 180" fill="none" className="w-full h-full" aria-hidden="true">
       {/* ─── Static: Documents ─── */}
-      {renderDoc(DOC_A_X, "Equipment Schedule", docAFields)}
-      {renderDoc(DOC_B_X, "ACORD 25", docBFields)}
+      {renderDoc(DOC_A_X, "Insurance Requirements", docAFields)}
+      {renderDoc(DOC_B_X, "ACORD", docBFields)}
 
       {/* ─── Animated: Blue pulse flashes as laser crosses fields ─── */}
       {renderFieldFlashes(DOC_A_X, docAFields)}
@@ -523,8 +525,8 @@ export function OutputAnimation() {
           ? { duration: DUR, repeat: Infinity, times: [0, 0.02, 0.78, 0.88, 1], ease: "linear" }
           : { duration: 0.2 }}
       >
-        {renderDocShell(DOC_A_X, "Equipment Schedule")}
-        {renderDocShell(DOC_B_X, "ACORD 25")}
+        {renderDocShell(DOC_A_X, "Insurance Requirements")}
+        {renderDocShell(DOC_B_X, "ACORD")}
       </motion.g>
 
       {/* ─── Staggered field reveals with connection lines (all appear together per field) ─── */}

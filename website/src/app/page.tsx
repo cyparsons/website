@@ -32,19 +32,34 @@ const faqCategories = [
           "Flagged COIs show each specific deficiency: the field, the expected value, the actual value, and the reason for the flag. Your team knows exactly what to follow up on without re-reading the entire document.",
       },
       {
-        question: "Is this just COI tracking?",
+        question: "Is Swift Stack built specifically for equipment finance?",
         answer:
-          "No. COI tracking tools tell you whether a document has been received. Swift Stack reads the document, compares every field against your deal requirements and equipment schedule, and tells you whether the contents are correct. It's document verification, not document tracking.",
+          "Yes. Swift Stack is purpose-built for equipment finance COI verification and pre-funding insurance checks. The system understands multi-asset deals, equipment schedules with dozens or hundreds of serial numbers, and the specific equipment lease insurance requirements that lenders need verified before funding. Generic document tools don't handle this level of detail.",
+      },
+      {
+        question: "What if the AI flags something incorrectly?",
+        answer:
+          "Every flagged item includes the extracted value, the expected value, and the reason for the flag. Your analyst reviews each one before any action is taken. If a flag is incorrect, it's cleared during review. The system is designed around human-in-the-loop review, so nothing moves forward without your team's sign-off.",
+      },
+      {
+        question: "How does Swift Stack handle renewals?",
+        answer:
+          "When a renewed COI comes in, Swift Stack compares it against the same deal requirements and equipment schedule as the original. Any changes in coverage, limits, or asset details are flagged so your team can confirm the renewal meets the same standards before updating the file.",
       },
     ],
   },
   {
-    label: "Integration",
+    label: "Workflow",
     items: [
+      {
+        question: "How does Swift Stack fit into our existing workflow?",
+        answer:
+          "Swift Stack automates the repetitive parts of document review. It doesn't replace your existing process or remove human oversight. The system handles extraction and comparison. Your team handles exceptions, judgment calls, and final approval. Human-in-the-loop is a core design principle, not an afterthought.",
+      },
       {
         question: "Does Swift Stack integrate with our existing systems?",
         answer:
-          "Yes. We currently integrate with Microsoft SharePoint and Outlook for automated file retrieval. Google Drive integration is in progress.",
+          "Yes. We currently integrate with Microsoft SharePoint and Outlook for automated file retrieval, with more integrations on the way.",
       },
       {
         question: "What COI formats does Swift Stack support?",
@@ -52,29 +67,34 @@ const faqCategories = [
           "PDF, scanned images, and digital certificates. The AI extraction layer handles format variations without manual intervention.",
       },
       {
-        question: "How does Swift Stack fit into our existing workflow?",
+        question: "How quickly are documents processed?",
         answer:
-          "Swift Stack automates the repetitive parts of document review. It doesn't replace your existing process or remove human oversight. The system handles extraction and comparison. Your team handles exceptions, judgment calls, and final approval. Human-in-the-loop is a core design principle, not an afterthought.",
+          "Most documents are verified in under 30 seconds.",
+      },
+      {
+        question: "Is training required for my team?",
+        answer:
+          "Minimal. The review experience is the same as what your team already does, just with verification overlays on the document showing exactly what passed and what was flagged. If your team can read a COI today, they can use Swift Stack.",
       },
     ],
   },
   {
-    label: "Process & Compliance",
+    label: "Compliance",
     items: [
-      {
-        question: "Is Swift Stack built specifically for equipment finance?",
-        answer:
-          "Yes. Swift Stack is purpose-built for equipment finance COI verification and pre-funding insurance checks. The system understands multi-asset deals, equipment schedules with dozens or hundreds of serial numbers, and the specific equipment lease insurance requirements that lenders need verified before funding. Generic document tools don't handle this level of detail.",
-      },
-      {
-        question: "How quickly are documents processed?",
-        answer:
-          "Most document checks complete in under 30 seconds. The larger the document, the longer it takes.",
-      },
       {
         question: "Do you support audit logs and traceability?",
         answer:
           "Yes. Every AI extraction, every field comparison, every routing decision, and every user action is logged. The full audit trail is available for compliance review at any time.",
+      },
+      {
+        question: "Where is our data stored?",
+        answer:
+          "All documents and verification results are stored securely in your own environment within SharePoint. Your data stays in your infrastructure.",
+      },
+      {
+        question: "What happens to documents after review?",
+        answer:
+          "Documents, along with the full verification results and any analyst decisions, are stored in your environment and remain audit-ready. Nothing is deleted unless your team decides to remove it.",
       },
     ],
   },
@@ -93,13 +113,13 @@ const steps = [
   {
     title: "Analyze",
     brief: "AI and code logic verify every field.",
-    detail: "AI extraction and structured code logic work together to read every field on the document and run a field-by-field comparison against your insurance requirements, equipment schedule, or last approved COI. Deficiencies like coverage gaps, serial number mismatches, and missing endorsements are identified automatically across single-asset and multi-asset deals.",
+    detail: "Each COI is read field by field and compared against your equipment schedule and insurance requirements. All deficiencies are caught in a matter of seconds, such as mismatched serial numbers, incorrect actual cash values, wrong asset descriptions, and missing additional insured. Flagged automatically, whether it's one asset or a hundred.",
     Animation: AnalyzeAnimation,
   },
   {
     title: "Output",
     brief: "A streamlined, exception-based review.",
-    detail: "Results are presented as a readable overlay directly on the insurance document. Every field is highlighted with the verification result, so your analyst sees exactly what passed, what deficiencies were found, and why. Your team reviews exceptions, not every line. Deals move to funding faster.",
+    detail: "Results are presented as a readable overlay directly on the insurance document. Every field is highlighted with the verification result, so your analyst sees exactly what passed, what deficiencies were found, and why. Your team reviews exceptions, not every line. Every document, along with its streamlined review and final verification, is stored in your environment and audit-ready.",
     Animation: OutputAnimation,
   },
 ]
@@ -132,12 +152,12 @@ function Hero() {
         {/* Text */}
         <div>
           <motion.h1
-            className="text-gradient text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
+            className="text-4xl font-bold leading-[1.1] tracking-tight text-text-primary pb-1 md:text-5xl lg:text-6xl"
             initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE.easeInOut }}
           >
-            Document Intelligence for Equipment Finance Insurance
+            Intelligent COI Verification for Equipment Finance Lenders
           </motion.h1>
 
           <motion.p
@@ -243,7 +263,7 @@ function TheProblem() {
 
         <FadeIn delay={0.1}>
           <p className="mx-auto mt-8 max-w-[700px] text-center text-base leading-relaxed text-slate-400 md:text-lg">
-            Serial numbers, coverage limits, actual cash values, endorsements, loss payee, additional insured. These fields get checked on every equipment lease insurance certificate that comes through because they protect your position on the asset. On multi-asset deals, every item on the equipment schedule means more to verify, more deficiencies to catch, and more time before funding. The pre-funding checks are necessary. The way they get done is what can be improved.
+            Serial numbers, coverage limits, actual cash values, endorsements, loss payee, additional insured. These fields get checked on every COI that comes through because they protect your position on the asset. On multi-asset deals, every item on the equipment schedule means more to verify, more deficiencies to catch, and more time before funding. Pre-funding insurance reviews are necessary. The way they get done can be improved.
           </p>
         </FadeIn>
       </div>
@@ -367,7 +387,7 @@ function HowItWorks() {
   const stepVisible = [s0Visible, s1Visible, s2Visible]
 
   return (
-    <section id="how-it-works" className="relative overflow-clip py-16 md:py-24">
+    <section id="how-it-works" className="relative overflow-visible py-16 pb-28 md:py-24 md:pb-36">
       {/* Background grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -396,8 +416,8 @@ function HowItWorks() {
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
             <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">How It Works</p>
-            <h2 className="text-gradient text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-              Three Steps. Every Field Verified.
+            <h2 className="text-gradient pb-2 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+              Built Around How Your Team Already Works
             </h2>
           </div>
         </FadeIn>
@@ -488,8 +508,8 @@ function HowItWorks() {
 // ---------- Section 5: Results ----------
 
 const statDetails = {
-  speed: "Field-by-field comparisons that took hours of manual review finish in seconds. Your team gets that time back for follow-ups, resolving deficiencies, and moving deals to funding.",
-  accuracy: "Serial number mismatches, coverage gaps, missing endorsements, incorrect loss payee details. Deficiencies that are easy to overlook during manual review of equipment lease insurance are caught consistently, on every document.",
+  speed: "As deal volume grows and multi-asset COIs stack up, manual review becomes a bottleneck. Your team gets that time back for resolving deficiencies, moving deals to funding, and focusing on higher-value work.",
+  accuracy: "The deficiencies that matter most in equipment lease insurance are often the easiest to miss at volume. Mismatched serial numbers, incorrect actual cash values, missing endorsements. Consistent, automated review means fewer slip through before funding.",
 }
 
 function Results() {
@@ -775,18 +795,18 @@ function FAQ() {
         <FadeIn>
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">FAQ</p>
           <h2 className="text-gradient text-center text-3xl font-bold tracking-tight md:text-4xl">
-            Common Questions
+            What Lenders Ask Us
           </h2>
         </FadeIn>
 
         {/* Category tabs */}
         <FadeIn delay={0.1}>
-          <div className="relative mt-10 flex justify-center gap-2">
+          <div className="relative mt-10 grid grid-cols-3 gap-4 mx-auto max-w-md">
             {faqCategories.map((cat, i) => (
               <button
                 key={cat.label}
                 onClick={() => setActiveTab(i)}
-                className={`relative cursor-pointer rounded-full px-5 py-2 text-sm font-medium transition-all duration-250 ${
+                className={`relative cursor-pointer rounded-full px-6 py-2 text-center text-sm font-medium transition-all duration-250 ${
                   activeTab === i
                     ? "text-white"
                     : "text-text-secondary hover:text-text-primary"
@@ -871,11 +891,11 @@ function CTASection() {
         <div className="mx-auto max-w-2xl px-6 text-center">
           <FadeIn>
             <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-              Get Started with Swift Stack
+              Fewer Missed Deficiencies. Faster Funding.
             </h2>
 
             <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-slate-400 md:text-lg">
-              Your team is still reviewing every field on every COI by hand. See what changes when they don&apos;t have to.
+              See what changes when your team reviews exceptions instead of every field on every document.
             </p>
 
             <div className="mt-8">

@@ -50,7 +50,7 @@ export default function BlogPage() {
             Our Blog
           </p>
           <h1 className="text-gradient text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-            From the Swift Stack Team
+            Insights on Equipment Finance Operations
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary">
             How document verification, insurance compliance, and operational efficiency work in practice.
