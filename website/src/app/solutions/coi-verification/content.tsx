@@ -179,10 +179,9 @@ function Hero() {
         >
           <Link
             href="/contact"
-            className="btn-primary inline-flex items-center justify-center px-7 py-3.5 text-sm"
+            className="btn-trace inline-flex items-center justify-center px-7 py-3.5 text-base"
           >
-            Get Started
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <span>Get Started</span>
           </Link>
           <Link
             href="#how-it-works"
@@ -507,10 +506,9 @@ function CTA() {
               <div className="mt-10">
                 <Link
                   href="/contact"
-                  className="btn-primary inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm"
+                  className="btn-trace inline-flex items-center justify-center px-8 py-4 text-base"
                 >
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <span>Get Started</span>
                 </Link>
               </div>
 

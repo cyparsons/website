@@ -32,7 +32,7 @@ export function Accordion({ items }: AccordionProps) {
             }`}
           >
             <button
-              className="flex w-full items-center gap-4 px-6 py-5 text-left"
+              className="flex w-full cursor-pointer items-center gap-4 px-6 py-5 text-left"
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
             >

@@ -151,6 +151,491 @@ export function RiskyWorkflow() {
   )
 }
 
+// ─── How It Works Step Animations ───
+// Continuous loop while in view
+
+/** Documents flowing with comet-trail effect */
+export function IngestAnimation() {
+  const ref = useRef<SVGSVGElement>(null)
+  const inView = useInView(ref, { amount: 0.3 })
+  const reduced = useReducedMotion()
+  const play = inView && !reduced
+
+  // 3 doc templates at different y positions with varied field layouts
+  const templates = [
+    { y: 20, header: 18, fields: [[22, 10], [16, 14], [20, 8], [12, 16]] },
+    { y: 68, header: 14, fields: [[18, 12], [22, 10], [14, 16], [20, 12]] },
+    { y: 116, header: 20, fields: [[16, 14], [20, 12], [18, 10], [22, 8]] },
+  ]
+  // Non-repeating sequence of which row each doc appears on (0=top, 1=mid, 2=bottom)
+  // 6-item cycle so the pattern doesn't feel mechanical
+  const sequence = [0, 2, 1, 2, 0, 1]
+  const dur = 3.5
+  const stagger = dur / 3
+  const totalCycle = sequence.length * stagger
+  const repeatDelay = totalCycle - dur
+
+  return (
+    <svg ref={ref} viewBox="0 0 320 160" fill="none" className="w-full h-full" style={{ overflow: "visible" }} aria-hidden="true">
+      <defs>
+        <linearGradient id="trail" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#006AAE" stopOpacity="0" />
+          <stop offset="100%" stopColor="#006AAE" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+
+      {sequence.map((tIdx, i) => {
+        const doc = templates[tIdx]
+        return (
+          <motion.g
+            key={i}
+            animate={play
+              ? { x: [-40, 320], opacity: [0, 1, 1, 0] }
+              : { x: -40, opacity: 0 }}
+            transition={play
+              ? {
+                  x: { duration: dur, delay: i * stagger, repeat: Infinity, repeatDelay, ease: "linear" },
+                  opacity: { duration: dur, delay: i * stagger, repeat: Infinity, repeatDelay, ease: "linear", times: [0, 0.08, 0.88, 1] },
+                }
+              : { duration: 0.2 }}
+          >
+            {/* Comet trail */}
+            <rect x={-90} y={doc.y + 4} width="90" height="16" rx="8" fill="url(#trail)" />
+            {/* Document body */}
+            <rect x={0} y={doc.y} width="30" height="40" rx="3"
+              fill="white" stroke="#006AAE" strokeWidth="1.2" />
+            {/* Corner fold */}
+            <path d={`M22 ${doc.y} L22 ${doc.y + 7} L30 ${doc.y + 7}`} fill="#D6EDFB" />
+            <path d={`M22 ${doc.y} L30 ${doc.y + 7}`} stroke="#006AAE" strokeWidth="0.6" opacity="0.4" />
+            {/* Header bar */}
+            <rect x={4} y={doc.y + 4} width={doc.header} height="2.5" rx="1.2" fill="#003263" opacity="0.7" />
+            {/* Field rows: label + value pair per row */}
+            {doc.fields.map(([labelW, valueW], fi) => {
+              const fy = doc.y + 11 + fi * 7
+              return (
+                <g key={fi}>
+                  <rect x={4} y={fy} width={labelW} height="2" rx="1" fill="#003263" opacity="0.15" />
+                  <rect x={4} y={fy + 3} width={valueW} height="1.5" rx="0.75" fill="#006AAE" opacity="0.2" />
+                </g>
+              )
+            })}
+          </motion.g>
+        )
+      })}
+    </svg>
+  )
+}
+
+/** Laser beam driven by requestAnimationFrame for reliable y-position animation */
+function LaserBeam({ play, laserTop, laserBot, dur, scanEnd }: {
+  play: boolean; laserTop: number; laserBot: number; dur: number; scanEnd: number
+}) {
+  const gRef = useRef<SVGGElement>(null)
+  const startRef = useRef<number | null>(null)
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    if (!play) {
+      if (gRef.current) gRef.current.style.opacity = "0"
+      startRef.current = null
+      cancelAnimationFrame(rafRef.current)
+      return
+    }
+
+    function tick(now: number) {
+      if (!gRef.current) return
+      if (startRef.current === null) startRef.current = now
+
+      const elapsed = (now - startRef.current) / 1000
+      const t = (elapsed % dur) / dur // normalized 0-1 within cycle
+
+      let currentY: number
+      let currentOpacity: number
+
+      if (t < scanEnd) {
+        // Scanning down with ease-out (decelerates toward bottom)
+        const linear = t / scanEnd
+        const eased = 1 - (1 - linear) * (1 - linear) // quadratic ease-out
+        currentY = laserTop + (laserBot - laserTop) * eased
+        // Fade in during first 5% of scan
+        currentOpacity = Math.min(1, linear / 0.05)
+      } else if (t < scanEnd + 0.04) {
+        // Fade out at bottom
+        currentY = laserBot
+        currentOpacity = 1 - (t - scanEnd) / 0.04
+      } else {
+        // Invisible, parked at top
+        currentY = laserTop
+        currentOpacity = 0
+      }
+
+      gRef.current.style.transform = `translateY(${currentY}px)`
+      gRef.current.style.opacity = String(currentOpacity)
+
+      rafRef.current = requestAnimationFrame(tick)
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [play, laserTop, laserBot, dur, scanEnd])
+
+  return (
+    <g ref={gRef} style={{ opacity: 0 }}>
+      {/* Sharp scanning line */}
+      <rect x={5} y={-1} width={350} height={2} rx={1} fill="#2AA0E6" opacity={0.5} />
+      {/* 3 glow lines below — decreasing opacity for depth */}
+      <rect x={5} y={1} width={350} height={2} fill="#2AA0E6" opacity={0.22} />
+      <rect x={5} y={3} width={350} height={2} fill="#2AA0E6" opacity={0.1} />
+      <rect x={5} y={5} width={350} height={2} fill="#2AA0E6" opacity={0.04} />
+    </g>
+  )
+}
+
+/** Dual-document laser scan: horizontal beam sweeps both docs, fields highlight */
+export function AnalyzeAnimation() {
+  const ref = useRef<SVGSVGElement>(null)
+  const inView = useInView(ref, { amount: 0.3 })
+  const reduced = useReducedMotion()
+  const play = inView && !reduced
+
+  const DUR = 7
+
+  // Document dimensions
+  const DOC_W = 140
+  const DOC_H = 160
+  const DOC_A_X = 10
+  const DOC_B_X = 210
+  const DOC_Y = 10
+
+  // Field row y-positions (absolute, same for both docs)
+  const fieldYs = [38, 62, 86, 110, 134]
+  const FIELD_H = 16
+
+  // Laser scan range (top to bottom of documents)
+  const LASER_TOP = DOC_Y
+  const LASER_BOT = DOC_Y + DOC_H
+  const SCAN_END = 0.50 // fraction of cycle spent scanning
+
+  // Field label/value widths per document (varied for realism)
+  const docAFields = [
+    { labelW: 50, valueW: 90 },
+    { labelW: 40, valueW: 105 },
+    { labelW: 55, valueW: 80 },
+    { labelW: 45, valueW: 95 },
+    { labelW: 60, valueW: 70 },
+  ]
+  const docBFields = [
+    { labelW: 45, valueW: 95 },
+    { labelW: 55, valueW: 85 },
+    { labelW: 38, valueW: 100 },
+    { labelW: 50, valueW: 90 },
+    { labelW: 42, valueW: 80 },
+  ]
+
+  // Calculate when laser reaches each field (as fraction of total cycle)
+  // Calculate when laser reaches each field, accounting for ease-out curve
+  // Inverse of easeOut(t) = 1-(1-t)^2: t = 1 - sqrt(1 - progress)
+  const fieldActivationTimes = fieldYs.map((y) => {
+    const progress = (y + FIELD_H / 2 - LASER_TOP) / (LASER_BOT - LASER_TOP)
+    const linearT = 1 - Math.sqrt(1 - progress)
+    return linearT * SCAN_END
+  })
+
+  // Helper to render a static document shell
+  const renderDoc = (x: number, label: string, fields: { labelW: number; valueW: number }[]) => (
+    <g>
+      <rect x={x} y={DOC_Y} width={DOC_W} height={DOC_H} rx={5}
+        fill="white" stroke="#006AAE" strokeWidth={1.2} />
+      {/* Header bar */}
+      <rect x={x} y={DOC_Y} width={DOC_W} height={18} rx={5} fill="#003263" />
+      <rect x={x} y={DOC_Y + 14} width={DOC_W} height={4} fill="#003263" />
+      <text x={x + 10} y={DOC_Y + 13} fontSize="8" fontWeight={700} fill="white"
+        fontFamily="var(--font-sans)">{label}</text>
+      {/* Corner fold */}
+      <path d={`M${x + DOC_W - 18} ${DOC_Y} L${x + DOC_W - 18} ${DOC_Y + 10} L${x + DOC_W} ${DOC_Y + 10}`}
+        fill="#D6EDFB" />
+      {/* Field placeholder rows */}
+      {fields.map((f, i) => (
+        <g key={`field-${i}`}>
+          <rect x={x + 8} y={fieldYs[i]} width={f.labelW} height={2.5} rx={1.2}
+            fill="#003263" opacity={0.12} />
+          <rect x={x + 8} y={fieldYs[i] + 5} width={f.valueW} height={2.5} rx={1}
+            fill="#003263" opacity={0.08} />
+          <rect x={x + 8} y={fieldYs[i] + 10} width={f.labelW * 0.6} height={2} rx={1}
+            fill="#003263" opacity={0.05} />
+        </g>
+      ))}
+    </g>
+  )
+
+  // Helper to render blue pulse flash on each field as laser crosses it
+  const renderFieldFlashes = (x: number, fields: { labelW: number; valueW: number }[]) =>
+    fields.map((f, i) => {
+      const tActivate = fieldActivationTimes[i]
+      return (
+        <motion.g
+          key={`flash-${x}-${i}`}
+          animate={play
+            ? { opacity: [0, 0, 0.7, 0, 0] }
+            : { opacity: 0 }}
+          transition={play
+            ? {
+                duration: DUR, repeat: Infinity,
+                times: [0, Math.max(0, tActivate - 0.005), tActivate + 0.01, tActivate + 0.06, 1],
+                ease: "linear",
+              }
+            : { duration: 0.2 }}
+        >
+          {/* Blue flash overlay on text placeholder lines */}
+          <rect x={x + 8} y={fieldYs[i]} width={f.labelW} height={2.5} rx={1.2} fill="#2AA0E6" />
+          <rect x={x + 8} y={fieldYs[i] + 5} width={f.valueW} height={2.5} rx={1} fill="#2AA0E6" />
+          <rect x={x + 8} y={fieldYs[i] + 10} width={f.labelW * 0.6} height={2} rx={1} fill="#2AA0E6" />
+        </motion.g>
+      )
+    })
+
+  return (
+    <svg ref={ref} viewBox="0 0 360 180" fill="none" className="w-full h-full" aria-hidden="true">
+      {/* ─── Static: Documents ─── */}
+      {renderDoc(DOC_A_X, "Equipment Schedule", docAFields)}
+      {renderDoc(DOC_B_X, "ACORD 25", docBFields)}
+
+      {/* ─── Animated: Blue pulse flashes as laser crosses fields ─── */}
+      {renderFieldFlashes(DOC_A_X, docAFields)}
+      {renderFieldFlashes(DOC_B_X, docBFields)}
+
+      {/* ─── Animated: Laser beam (rAF-driven, not Motion) ─── */}
+      <LaserBeam play={play} laserTop={LASER_TOP} laserBot={LASER_BOT} dur={DUR} scanEnd={SCAN_END} />
+    </svg>
+  )
+}
+
+/** Post-analysis output: two documents with colored fields, connection lines, cycling flagged position, mini results panel */
+export function OutputAnimation() {
+  const ref = useRef<SVGSVGElement>(null)
+  const inView = useInView(ref, { amount: 0.3 })
+  const reduced = useReducedMotion()
+  const play = inView && !reduced
+
+  const DUR = 8
+
+  // Document dimensions (bigger than AnalyzeAnimation)
+  const DOC_W = 155
+  const DOC_H = 175
+  const DOC_A_X = 10
+  const DOC_B_X = 220
+  const DOC_Y = 10
+
+  // Field row y-positions
+  const fieldYs = [40, 66, 92, 118, 144]
+  const FIELD_H = 18
+
+  // Cycling flagged field position
+  const flaggedSequence = [2, 0, 4, 1, 3]
+  const [cycle, setCycle] = useState(0)
+  const [flaggedIdx, setFlaggedIdx] = useState(2)
+
+  useEffect(() => {
+    if (!inView || reduced) return
+    const interval = setInterval(() => {
+      setCycle((c) => c + 1)
+      setFlaggedIdx(flaggedSequence[(cycle + 1) % flaggedSequence.length])
+    }, DUR * 1000)
+    return () => clearInterval(interval)
+  }, [inView, reduced, cycle])
+
+  // Field label/value widths per document (varied for realism)
+  const docAFields = [
+    { labelW: 55, valueW: 100 },
+    { labelW: 45, valueW: 115 },
+    { labelW: 60, valueW: 88 },
+    { labelW: 50, valueW: 105 },
+    { labelW: 65, valueW: 78 },
+  ]
+  const docBFields = [
+    { labelW: 50, valueW: 105 },
+    { labelW: 60, valueW: 92 },
+    { labelW: 42, valueW: 110 },
+    { labelW: 55, valueW: 98 },
+    { labelW: 48, valueW: 88 },
+  ]
+
+  // Mini results panel
+  const PANEL_X = 395
+  const PANEL_W = 90
+  const PANEL_H = 155
+  const PANEL_Y = DOC_Y + 10
+
+  // Connection midpoint X
+  const MID_X = (DOC_A_X + DOC_W + DOC_B_X) / 2
+
+  // Render a document shell (no fields — fields rendered separately for stagger)
+  const renderDocShell = (x: number, label: string) => (
+    <g>
+      <rect x={x} y={DOC_Y} width={DOC_W} height={DOC_H} rx={5}
+        fill="white" stroke="#006AAE" strokeWidth={1.2} />
+      <rect x={x} y={DOC_Y} width={DOC_W} height={18} rx={5} fill="#003263" />
+      <rect x={x} y={DOC_Y + 14} width={DOC_W} height={4} fill="#003263" />
+      <text x={x + 10} y={DOC_Y + 13} fontSize="8" fontWeight={700} fill="white"
+        fontFamily="var(--font-sans)">{label}</text>
+      <path d={`M${x + DOC_W - 18} ${DOC_Y} L${x + DOC_W - 18} ${DOC_Y + 10} L${x + DOC_W} ${DOC_Y + 10}`}
+        fill="#D6EDFB" />
+    </g>
+  )
+
+  // Render a single field row with status coloring
+  const renderField = (x: number, f: { labelW: number; valueW: number }, i: number) => {
+    const isFlagged = i === flaggedIdx
+    const statusColor = isFlagged ? "#F59E0B" : "#22C55E"
+    const bgColor = isFlagged ? "rgba(245, 158, 11, 0.10)" : "rgba(34, 197, 94, 0.08)"
+    const barOpacity = isFlagged ? 0.35 : 0.25
+
+    return (
+      <g>
+        <rect x={x + 5} y={fieldYs[i] - 2} width={DOC_W - 10} height={FIELD_H + 4} rx={3}
+          fill={bgColor} />
+        <rect x={x + 8} y={fieldYs[i]} width={f.labelW} height={2.5} rx={1.2}
+          fill={statusColor} opacity={barOpacity} />
+        <rect x={x + 8} y={fieldYs[i] + 5} width={f.valueW} height={2.5} rx={1}
+          fill={statusColor} opacity={barOpacity * 0.7} />
+        <rect x={x + 8} y={fieldYs[i] + 10} width={f.labelW * 0.6} height={2} rx={1}
+          fill={statusColor} opacity={barOpacity * 0.4} />
+        <circle cx={x + DOC_W - 12} cy={fieldYs[i] + FIELD_H / 2} r={3.5}
+          fill={statusColor} opacity={0.7} />
+      </g>
+    )
+  }
+
+  // Stagger timing for field reveals (fraction of DUR)
+  const fieldRevealTime = (i: number) => 0.03 + i * 0.03
+  const fieldRevealEnd = (i: number) => fieldRevealTime(i) + 0.03
+
+  return (
+    <svg ref={ref} viewBox="0 0 500 210" fill="none" className="w-full h-full" aria-hidden="true">
+      {/* ─── Document shells (fade in together) ─── */}
+      <motion.g
+        key={`shells-${cycle}`}
+        initial={{ opacity: 0 }}
+        animate={play
+          ? { opacity: [0, 1, 1, 0, 0] }
+          : { opacity: reduced ? 1 : 0 }}
+        transition={play
+          ? { duration: DUR, repeat: Infinity, times: [0, 0.02, 0.78, 0.88, 1], ease: "linear" }
+          : { duration: 0.2 }}
+      >
+        {renderDocShell(DOC_A_X, "Equipment Schedule")}
+        {renderDocShell(DOC_B_X, "ACORD 25")}
+      </motion.g>
+
+      {/* ─── Staggered field reveals with connection lines (all appear together per field) ─── */}
+      {fieldYs.map((_, i) => {
+        const tIn = fieldRevealTime(i)
+        const tVis = fieldRevealEnd(i)
+        const isFlagged = i === flaggedIdx
+        const color = isFlagged ? "#F59E0B" : "#22C55E"
+        const fieldCenterY = fieldYs[i] + FIELD_H / 2
+
+        return (
+          <motion.g
+            key={`fields-${cycle}-${i}`}
+            initial={{ opacity: 0 }}
+            animate={play
+              ? { opacity: [0, 0, 1, 1, 0, 0] }
+              : { opacity: reduced ? 1 : 0 }}
+            transition={play
+              ? { duration: DUR, repeat: Infinity, times: [0, tIn, tVis, 0.78, 0.88, 1], ease: "linear" }
+              : { duration: 0.2 }}
+          >
+            {/* Fields on both docs */}
+            {renderField(DOC_A_X, docAFields[i], i)}
+            {renderField(DOC_B_X, docBFields[i], i)}
+
+            {/* Connection line between matching fields */}
+            <line
+              x1={DOC_A_X + DOC_W} y1={fieldCenterY}
+              x2={DOC_B_X} y2={fieldCenterY}
+              stroke={color} strokeWidth={1.2} strokeDasharray="4,3" opacity={0.6}
+            />
+
+            {/* Status dot at midpoint */}
+            <circle cx={MID_X} cy={fieldCenterY} r={6} fill="white" stroke={color} strokeWidth={1.3} />
+            {isFlagged ? (
+              <text x={MID_X} y={fieldCenterY + 3} fontSize="7" fontWeight={700} fill={color}
+                fontFamily="var(--font-sans)" textAnchor="middle">!</text>
+            ) : (
+              <path
+                d={`M${MID_X - 2.5} ${fieldCenterY + 0.5} L${MID_X - 0.5} ${fieldCenterY + 2.5} L${MID_X + 3} ${fieldCenterY - 1.5}`}
+                stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none"
+              />
+            )}
+          </motion.g>
+        )
+      })}
+
+      {/* ─── Mini results panel ─── */}
+      <motion.g
+        key={`panel-${cycle}`}
+        initial={{ opacity: 0 }}
+        animate={play
+          ? { opacity: [0, 0, 1, 1, 0, 0] }
+          : { opacity: reduced ? 1 : 0 }}
+        transition={play
+          ? { duration: DUR, repeat: Infinity, times: [0, 0.02, 0.06, 0.78, 0.88, 1], ease: "linear" }
+          : { duration: 0.2 }}
+      >
+        {/* Panel background */}
+        <rect x={PANEL_X} y={PANEL_Y} width={PANEL_W} height={PANEL_H} rx={5}
+          fill="white" stroke="#CBD5E1" strokeWidth={0.8} />
+
+        {/* Panel header */}
+        <text x={PANEL_X + PANEL_W / 2} y={PANEL_Y + 15} fontSize="7.5" fontWeight={700}
+          fill="#374151" fontFamily="var(--font-sans)" textAnchor="middle">Results</text>
+        <line x1={PANEL_X + 8} y1={PANEL_Y + 22} x2={PANEL_X + PANEL_W - 8} y2={PANEL_Y + 22}
+          stroke="#E5E7EB" strokeWidth={0.5} />
+
+        {/* Status rows */}
+        {fieldYs.map((_, i) => {
+          const isFlagged = i === flaggedIdx
+          const color = isFlagged ? "#F59E0B" : "#22C55E"
+          const rowY = PANEL_Y + 32 + i * 24
+          const tIn = fieldRevealTime(i)
+          const tVis = fieldRevealEnd(i)
+
+          return (
+            <motion.g
+              key={`result-${cycle}-${i}`}
+              initial={{ opacity: 0 }}
+              animate={play
+                ? { opacity: [0, 0, 1, 1, 0, 0] }
+                : { opacity: reduced ? 1 : 0 }}
+              transition={play
+                ? { duration: DUR, repeat: Infinity, times: [0, tIn, tVis, 0.78, 0.88, 1], ease: "linear" }
+                : { duration: 0.2 }}
+            >
+              {/* Status circle */}
+              <circle cx={PANEL_X + 18} cy={rowY} r={5.5} fill={color} />
+              {isFlagged ? (
+                <text x={PANEL_X + 18} y={rowY + 3.5} fontSize="7.5" fontWeight={700} fill="white"
+                  fontFamily="var(--font-sans)" textAnchor="middle">!</text>
+              ) : (
+                <path
+                  d={`M${PANEL_X + 15} ${rowY + 0.5} L${PANEL_X + 17} ${rowY + 2.5} L${PANEL_X + 21} ${rowY - 1.5}`}
+                  stroke="white" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none"
+                />
+              )}
+              {/* Placeholder bars */}
+              <rect x={PANEL_X + 30} y={rowY - 3} width={isFlagged ? 40 : 46} height={2.5} rx={1.2}
+                fill={color} opacity={0.2} />
+              <rect x={PANEL_X + 30} y={rowY + 2} width={isFlagged ? 32 : 38} height={2} rx={1}
+                fill={color} opacity={0.12} />
+            </motion.g>
+          )
+        })}
+      </motion.g>
+    </svg>
+  )
+}
+
 // ─── Solution Card Animations (~160x100 viewBox) ───
 // Play once on scroll, then on hover
 

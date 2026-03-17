@@ -54,6 +54,41 @@ export function OrganizationSchema() {
   )
 }
 
+interface ArticleProps {
+  title: string
+  description: string
+  date: string
+  author: string
+  url: string
+}
+
+export function ArticleSchema({ title, description, date, author, url }: ArticleProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    datePublished: date,
+    author: {
+      "@type": "Person",
+      name: author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Swift Stack Solutions",
+      url: "https://swiftstacksolutions.com",
+    },
+    url,
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
+
 export function FAQSchema({ items }: { items: FAQItem[] }) {
   const schema = {
     "@context": "https://schema.org",

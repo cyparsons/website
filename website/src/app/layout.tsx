@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | Swift Stack",
   },
   description:
-    "COI verification for equipment finance. Serial numbers, coverage limits, endorsements, and entity matching verified against your requirements and equipment schedules.",
+    "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
   metadataBase: new URL("https://swiftstacksolutions.com"),
   openGraph: {
     type: "website",
@@ -19,8 +19,23 @@ export const metadata: Metadata = {
     siteName: "Swift Stack Solutions",
     title: "COI Verification for Equipment Finance | Swift Stack",
     description:
-      "COI verification for equipment finance. Serial numbers, coverage limits, endorsements, and entity matching verified against your requirements and equipment schedules.",
+      "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
     url: "https://swiftstacksolutions.com/",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Swift Stack Solutions - COI Verification for Equipment Finance",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "COI Verification for Equipment Finance | Swift Stack",
+    description:
+      "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
+    images: ["/og-image.png"],
   },
 }
 
