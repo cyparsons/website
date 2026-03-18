@@ -158,7 +158,7 @@ export default function ContactPage() {
                   <div className="mt-4 flex flex-col items-center gap-3 w-full md:flex-row md:w-auto md:gap-4">
                     <Link
                       href="/blog"
-                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-3 text-sm"
+                      className="btn-trace inline-flex w-full items-center justify-center gap-1.5 px-5 py-3 text-sm md:w-auto"
                     >
                       <span>Read our blog</span>
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -167,7 +167,7 @@ export default function ContactPage() {
                       href="https://www.linkedin.com/company/swift-stack-solutions/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-3 text-sm"
+                      className="btn-trace inline-flex w-full items-center justify-center gap-1.5 px-5 py-3 text-sm md:w-auto"
                     >
                       <span>Follow on LinkedIn</span>
                       <ArrowRight className="h-3.5 w-3.5" />
