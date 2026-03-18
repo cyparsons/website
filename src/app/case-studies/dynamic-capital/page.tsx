@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Case Study: Dynamic Capital | Swift Stack",
   description:
     "How Dynamic Capital streamlined COI renewal reviews, saving 150+ hours per month with 99% accuracy using Swift Stack's AI-powered verification platform.",
+  robots: { index: false, follow: false },
   openGraph: {
     title: "Case Study: Dynamic Capital | Swift Stack",
     description:

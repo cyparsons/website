@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description:
       "Insights on equipment finance operations, COI verification, and pre-funding document workflows.",
     type: "website",
+    url: "https://swiftstacksolutions.com/blog",
   },
 }
 

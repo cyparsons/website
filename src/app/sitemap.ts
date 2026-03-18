@@ -20,6 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${baseUrl}/solutions/coi-verification`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -30,12 +36,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/case-studies/dynamic-capital`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
     },
     ...blogEntries,
   ]
