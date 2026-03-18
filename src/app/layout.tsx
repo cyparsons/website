@@ -7,7 +7,7 @@ import { OrganizationSchema } from "@/components/schema"
 
 export const metadata: Metadata = {
   title: {
-    default: "Intelligent COI Verification for Equipment Finance | Swift Stack",
+    default: "COI Verification for Equipment Finance | Swift Stack",
     template: "%s | Swift Stack",
   },
   description:
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Swift Stack Solutions",
-    title: "Intelligent COI Verification for Equipment Finance | Swift Stack",
+    title: "COI Verification for Equipment Finance | Swift Stack",
     description:
       "Pre-funding document verification for equipment finance. COI deficiencies caught automatically across multi-asset deals.",
     url: "https://swiftstacksolutions.com/",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Intelligent COI Verification for Equipment Finance | Swift Stack",
+    title: "COI Verification for Equipment Finance | Swift Stack",
     description:
       "Pre-funding document verification for equipment finance. COI deficiencies caught automatically across multi-asset deals.",
     images: ["/og.png"],
