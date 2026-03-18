@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     url: "https://swiftstacksolutions.com/",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og.png",
         width: 1200,
         height: 630,
         alt: "Swift Stack Solutions - COI Verification for Equipment Finance",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Intelligent COI Verification for Equipment Finance | Swift Stack",
     description:
       "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage, and deficiencies verified across multi-asset deals. 4x faster.",
-    images: ["/og-image.png"],
+    images: ["/og.png"],
   },
 }
 
