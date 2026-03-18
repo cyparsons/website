@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   },
   description:
     "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
+  icons: {
+    icon: "/favicon.svg",
+  },
   metadataBase: new URL("https://swiftstacksolutions.com"),
   openGraph: {
     type: "website",
