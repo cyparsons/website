@@ -125,7 +125,7 @@ export default function ContactPage() {
                 Whether you&apos;re managing COI reviews across multi-asset deals, handling renewal volumes, or looking to reduce deficiencies before funding, we can help your team move faster with fewer misses.
               </p>
               <p className="mt-4 text-base leading-relaxed text-text-tertiary">
-                Not sure if we&apos;re the right fit? We&apos;re always happy to chat about document verification, AI in financial operations, or where this space is headed. No pitch required.
+                Not sure if we&apos;re the right fit? We&apos;re always happy to chat about document verification, AI in financial operations, or where this space is headed.
               </p>
             </FadeIn>
           </div>
@@ -155,7 +155,7 @@ export default function ContactPage() {
                   <p className="mt-6 text-sm text-text-tertiary">
                     In the meantime, follow along where we share the latest.
                   </p>
-                  <div className="mt-4 flex flex-col gap-3 w-full md:flex-row md:w-auto md:gap-4">
+                  <div className="mt-4 flex flex-col items-center gap-3 w-full md:flex-row md:w-auto md:gap-4">
                     <Link
                       href="/blog"
                       className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-3 text-sm"
