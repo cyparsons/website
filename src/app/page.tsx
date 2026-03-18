@@ -181,7 +181,7 @@ function Hero() {
               style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.1), transparent 70%)" }}
               aria-hidden="true"
             />
-            <div className="relative w-[85%]">
+            <div className="relative w-[95%]">
               <HeroAnimation />
             </div>
           </motion.div>
@@ -194,7 +194,7 @@ function Hero() {
           >
             <Link
               href="/contact"
-              className="btn-trace inline-flex items-center justify-center px-7 py-3.5 text-base"
+              className="btn-trace inline-flex items-center justify-center px-6 py-3 text-sm md:px-7 md:py-3.5 md:text-base"
             >
               <span>Get Started</span>
             </Link>
@@ -291,7 +291,7 @@ function TheProblem() {
 
 function TheSolution() {
   return (
-    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-20 md:pb-28 scroll-mt-20">
+    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-16 md:pb-28 scroll-mt-16">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -320,7 +320,7 @@ function TheSolution() {
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">The Solution</p>
-          <h2 className="text-gradient mx-auto max-w-3xl text-center text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+          <h2 className="text-gradient mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
             Your Team Reviews Exceptions.<br />
             Swift Stack Handles the Rest.
           </h2>
@@ -328,7 +328,7 @@ function TheSolution() {
 
         {/* Animation */}
         <FadeIn delay={0.15}>
-          <div className="mt-8">
+          <div className="mt-6 md:mt-8 md:max-h-[65vh]">
             <SolutionAnimation />
           </div>
         </FadeIn>
@@ -388,6 +388,7 @@ function HowItWorks() {
   const step2Ref = useRef<HTMLDivElement>(null)
   const stepRefs = [step0Ref, step1Ref, step2Ref]
   const [mobileStep, setMobileStep] = useState(0)
+  const [showDetail, setShowDetail] = useState(false)
 
   // Scroll-driven timeline line
   const { scrollYProgress } = useScroll({
@@ -447,7 +448,7 @@ function HowItWorks() {
               {steps.map((step, i) => (
                 <button
                   key={step.title}
-                  onClick={() => setMobileStep(i)}
+                  onClick={() => { setMobileStep(i); setShowDetail(false) }}
                   className={`relative cursor-pointer rounded-xl px-3 py-3 text-center transition-all duration-250 ${
                     mobileStep === i
                       ? "text-white"
@@ -486,9 +487,33 @@ function HowItWorks() {
                 <p className="mt-2 text-base font-medium leading-relaxed text-text-primary/80">
                   {steps[mobileStep].brief}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-text-tertiary">
-                  {steps[mobileStep].detail}
-                </p>
+                <button
+                  onClick={() => setShowDetail(!showDetail)}
+                  className="mt-3 flex items-center gap-1.5 text-sm font-medium text-accent transition-colors duration-200"
+                >
+                  {showDetail ? "Show less" : "Learn more"}
+                  <motion.span
+                    animate={{ rotate: showDetail ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: EASE.smooth }}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.span>
+                </button>
+                <AnimatePresence>
+                  {showDetail && (
+                    <motion.div
+                      className="overflow-hidden"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: EASE.smooth }}
+                    >
+                      <p className="mt-3 text-sm leading-relaxed text-text-tertiary">
+                        {steps[mobileStep].detail}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </AnimatePresence>
             </div>
@@ -630,7 +655,7 @@ function Results() {
                   className="mx-auto mb-6 h-0.5 w-12 rounded-full"
                   style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
                 />
-                <div className="text-7xl font-bold md:text-8xl">
+                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums", minWidth: "3ch", textAlign: "center" }}>
                   <CountUp
                     target={4}
                     suffix="x"
@@ -668,7 +693,7 @@ function Results() {
                   className="mx-auto mb-6 h-0.5 w-12 rounded-full"
                   style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
                 />
-                <div className="text-7xl font-bold md:text-8xl">
+                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums", minWidth: "4ch", textAlign: "center" }}>
                   <CountUp
                     target={99}
                     suffix="%"
@@ -990,8 +1015,9 @@ export default function HomePage() {
       <HorizonLine />
       <Results />
       <HorizonLine />
-      <Testimonial />
-      <HorizonLine />
+      {/* Testimonial hidden until client sign-off */}
+      {/* <Testimonial /> */}
+      {/* <HorizonLine /> */}
       <FAQ />
       {/* No HorizonLine — CTA gradient fade handles the transition */}
       <CTASection />

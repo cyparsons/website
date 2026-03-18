@@ -11,7 +11,7 @@ export function Footer() {
         style={{ background: "linear-gradient(90deg, transparent 10%, rgba(42, 160, 230, 0.2) 50%, transparent 90%)" }}
         aria-hidden="true"
       />
-      <div className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mx-auto max-w-7xl px-6 pt-10 pb-14">
         {/* Row 1: Logo/name + links */}
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           <Link href="/" className="flex items-center">

@@ -192,10 +192,10 @@ export function Header() {
             style={{ backgroundColor: "#0A1628" }}
             onWheel={(e) => e.preventDefault()}
             onTouchMove={(e) => e.preventDefault()}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE.smooth }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: EASE.smooth }}
           >
             {/* Background grid */}
             <div
