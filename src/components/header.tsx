@@ -102,6 +102,8 @@ function MenuIcon({ open }: { open: boolean }) {
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
 
   const { scrollY } = useScroll()
 
@@ -254,11 +256,15 @@ export function Header() {
                       if (isAnchor) {
                         e.preventDefault()
                         setMobileOpen(false)
-                        const id = link.href.replace("/#", "")
-                        setTimeout(() => {
-                          const el = document.getElementById(id)
-                          if (el) el.scrollIntoView({ behavior: "smooth" })
-                        }, 350)
+                        if (pathname === "/") {
+                          const id = link.href.replace("/#", "")
+                          setTimeout(() => {
+                            const el = document.getElementById(id)
+                            if (el) el.scrollIntoView({ behavior: "smooth" })
+                          }, 350)
+                        } else {
+                          router.push(link.href)
+                        }
                       } else {
                         setMobileOpen(false)
                       }
