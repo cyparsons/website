@@ -595,9 +595,9 @@ function Results() {
         }}
         aria-hidden="true"
       />
-      {/* Bright grid near orb */}
+      {/* Bright grid near orb — desktop only */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
@@ -626,7 +626,7 @@ function Results() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-4xl px-6">
+      <div className="relative mx-auto max-w-4xl px-5 md:px-6">
         <FadeIn>
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">Results</p>
           <h2 className="text-center text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
@@ -634,9 +634,9 @@ function Results() {
           </h2>
         </FadeIn>
 
-        <div className="mx-auto mt-16 max-w-3xl" onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}>
+        <div className="mx-auto mt-12 max-w-sm md:mt-16 md:max-w-3xl" onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}>
           {/* Stats row — always visible */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-6 md:items-center md:gap-10">
+          <div className="grid grid-cols-2 items-center gap-4 md:grid-cols-[1fr_auto_1fr] md:gap-10">
             {/* Speed stat */}
             <FadeIn delay={0.1}>
               <motion.div
@@ -652,10 +652,10 @@ function Results() {
                 onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}
               >
                 <div
-                  className="mx-auto mb-6 h-0.5 w-12 rounded-full"
+                  className="mx-auto mb-6 h-0.5 w-12 rounded-full hidden md:block"
                   style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
                 />
-                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums", minWidth: "3ch", textAlign: "center" }}>
+                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums" }}>
                   <CountUp
                     target={4}
                     suffix="x"
@@ -667,11 +667,11 @@ function Results() {
               </motion.div>
             </FadeIn>
 
-            {/* Divider */}
-            <div className="flex items-center justify-center" aria-hidden="true">
+            {/* Divider — desktop only */}
+            <div className="hidden md:flex items-center justify-center" aria-hidden="true">
               <div
-                className="h-24 w-px md:h-32"
-                style={{ background: "linear-gradient(180deg, transparent, rgba(42, 160, 230, 0.3), transparent)" }}
+                className="h-32"
+                style={{ width: "1px", background: "linear-gradient(180deg, transparent, rgba(42, 160, 230, 0.3), transparent)" }}
               />
             </div>
 
@@ -690,10 +690,10 @@ function Results() {
                 onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}
               >
                 <div
-                  className="mx-auto mb-6 h-0.5 w-12 rounded-full"
+                  className="mx-auto mb-6 h-0.5 w-12 rounded-full hidden md:block"
                   style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
                 />
-                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums", minWidth: "4ch", textAlign: "center" }}>
+                <div className="text-7xl font-bold md:text-8xl" style={{ fontVariantNumeric: "tabular-nums" }}>
                   <CountUp
                     target={99}
                     suffix="%"
@@ -706,8 +706,8 @@ function Results() {
             </FadeIn>
           </div>
 
-          {/* Active indicator line */}
-          <div className="relative mt-8">
+          {/* Active indicator line — desktop only */}
+          <div className="relative mt-8 hidden md:block">
             <div
               className="h-px w-full"
               style={{ background: "linear-gradient(90deg, transparent 5%, rgba(42, 160, 230, 0.15) 50%, transparent 95%)" }}
