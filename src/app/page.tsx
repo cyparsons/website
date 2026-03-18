@@ -1,160 +1,147 @@
 "use client"
 
-import { useState, useRef, useEffect, Fragment } from "react"
-import { motion, useReducedMotion, useInView } from "motion/react"
+import { useState, useRef } from "react"
+import { motion, AnimatePresence, useReducedMotion, useInView, useScroll, useTransform } from "motion/react"
+import { ArrowRight, Check, ChevronDown } from "lucide-react"
 import Link from "next/link"
-import { ArrowRight, Linkedin } from "lucide-react"
-import Image from "next/image"
-import {
-  ManualWorkflow,
-  RepetitiveWorkflow,
-  RiskyWorkflow,
-  COIVerificationWorkflow,
-  LienValidationWorkflow,
-  DebtorSearchWorkflow,
-} from "@/components/workflow-animations"
 import { HeroAnimation } from "@/components/hero-animation"
+import { SolutionAnimation } from "@/components/solution-animation"
+import { IngestAnimation, AnalyzeAnimation, OutputAnimation } from "@/components/workflow-animations"
 import { FadeIn } from "@/components/fade-in"
 import { Accordion } from "@/components/accordion"
+import { CountUp } from "@/components/count-up"
 import { FAQSchema } from "@/components/schema"
-import { AnimatedDivider } from "@/components/animated-divider"
-import {
-  staggerContainer,
-  staggerItem,
-  viewportOnce,
-  EASE,
-} from "@/lib/animation"
+import { GridPulses } from "@/components/grid-pulses"
+// AnimatedDivider replaced by HorizonLine
+import { EASE } from "@/lib/animation"
 
 // ---------- Data ----------
 
-const solutionCards = [
+const faqCategories = [
   {
-    animation: COIVerificationWorkflow,
-    title: "Smarter Insurance Reviews",
-    subtitle: "COI Verification",
-    body: "Automatically verify COIs against your insurance requirements, previously approved COIs, and equipment schedules. Serial number verification, coverage checks, and multi-asset deals reviewed 4x faster, saving hundreds of hours every month.",
-    href: "/solutions/coi-verification",
-    primaryCta: "Learn More",
-    secondaryCta: "Get Started",
-    secondaryHref: "/contact",
-    badge: "Live Now",
-    gradient: "from-[#2AA0E6]/10 to-transparent",
+    label: "Product",
+    items: [
+      {
+        question: "How does asset verification work for large deals?",
+        answer:
+          "For each asset on the insurance, Swift Stack verifies the serial number, asset name, actual cash value, and deductible against the equipment schedule. Serial number formats are normalized automatically (dashes, spaces, and leading zeros handled for accurate matching). For a 50-asset deal, the full comparison runs in seconds. Mismatches are flagged with specific field-level detail so your team knows exactly what to follow up on.",
+      },
+      {
+        question: "What happens when a COI fails verification?",
+        answer:
+          "Flagged COIs show each specific deficiency: the field, the expected value, the actual value, and the reason for the flag. Your team knows exactly what to follow up on without re-reading the entire document.",
+      },
+      {
+        question: "Is Swift Stack built specifically for equipment finance?",
+        answer:
+          "Yes. Swift Stack is purpose-built for equipment finance COI verification and pre-funding insurance checks. The system understands multi-asset deals, equipment schedules with dozens or hundreds of serial numbers, and the specific equipment lease insurance requirements that lenders need verified before funding. Generic document tools don't handle this level of detail.",
+      },
+      {
+        question: "What if the AI flags something incorrectly?",
+        answer:
+          "Every flagged item includes the extracted value, the expected value, and the reason for the flag. Your analyst reviews each one before any action is taken. If a flag is incorrect, it's cleared during review. The system is designed around human-in-the-loop review, so nothing moves forward without your team's sign-off.",
+      },
+      {
+        question: "How does Swift Stack handle renewals?",
+        answer:
+          "When a renewed COI comes in, Swift Stack compares it against the same deal requirements and equipment schedule as the original. Any changes in coverage, limits, or asset details are flagged so your team can confirm the renewal meets the same standards before updating the file.",
+      },
+    ],
   },
   {
-    animation: LienValidationWorkflow,
-    title: "Automated Lien Validation",
-    subtitle: "PPSA & UCC Filing Verification",
-    body: "We're building automated filing verification for PPSA registrations and UCC filings. Debtor names, collateral descriptions, and registration details compared against the deal package before they go out.",
-    href: "/solutions/lien-validation",
-    primaryCta: "Learn More",
-    secondaryCta: "Join the Waitlist",
-    secondaryHref: "/contact",
-    badge: "Coming Soon",
-    gradient: "from-[#006AAE]/10 to-transparent",
+    label: "Workflow",
+    items: [
+      {
+        question: "How does Swift Stack fit into our existing workflow?",
+        answer:
+          "Swift Stack automates the repetitive parts of document review. It doesn't replace your existing process or remove human oversight. The system handles extraction and comparison. Your team handles exceptions, judgment calls, and final approval. Human-in-the-loop is a core design principle, not an afterthought.",
+      },
+      {
+        question: "Does Swift Stack integrate with our existing systems?",
+        answer:
+          "Yes. We currently integrate with Microsoft SharePoint and Outlook for automated file retrieval, with more integrations on the way.",
+      },
+      {
+        question: "What COI formats does Swift Stack support?",
+        answer:
+          "PDF, scanned images, and digital certificates. The AI extraction layer handles format variations without manual intervention.",
+      },
+      {
+        question: "How quickly are documents processed?",
+        answer:
+          "Most documents are verified in under 30 seconds.",
+      },
+      {
+        question: "Is training required for my team?",
+        answer:
+          "Minimal. The review experience is the same as what your team already does, just with verification overlays on the document showing exactly what passed and what was flagged. If your team can read a COI today, they can use Swift Stack.",
+      },
+    ],
   },
   {
-    animation: DebtorSearchWorkflow,
-    title: "Debtor Search Intelligence",
-    subtitle: "Registration Analysis",
-    body: "Debtor search results can run hundreds of pages. We're building intelligence that cuts through the volume, surfacing existing registrations, general security agreements, and blanket liens so your team can assess the full picture in minutes instead of hours.",
-    href: "/solutions/debtor-search",
-    primaryCta: "Learn More",
-    secondaryCta: "Join the Waitlist",
-    secondaryHref: "/contact",
-    badge: "Coming Soon",
-    gradient: "from-[#003263]/10 to-transparent",
-  },
-]
-
-const problemCards = [
-  {
-    animation: ManualWorkflow,
-    title: "Manual",
-    body: "Your team opens PDFs, reads fields line by line, and cross-references data against deal requirements by hand.",
-  },
-  {
-    animation: RepetitiveWorkflow,
-    title: "Repetitive",
-    body: "Same verification checks on every deal, every day. Skilled people doing work that doesn't require their expertise.",
-  },
-  {
-    animation: RiskyWorkflow,
-    title: "Risky",
-    body: "At volume, deficiencies slip through. A missed serial number or expired policy can mean funding against incomplete coverage.",
-  },
-]
-
-const teamMembers = [
-  {
-    name: "Your Name",
-    title: "Co-Founder & CEO",
-    photo: "/team/placeholder-1.jpg",
-    linkedin: "https://linkedin.com/in/yourprofile",
-    bio: "Background in equipment finance operations with experience leading documentation and funding teams. Built Swift Stack to solve the verification bottleneck that slows down every deal.",
-  },
-  {
-    name: "Coworker Name",
-    title: "Co-Founder & CTO",
-    photo: "/team/placeholder-2.jpg",
-    linkedin: "https://linkedin.com/in/coworkerprofile",
-    bio: "Engineering background with deep expertise in document intelligence and AI systems. Designed the verification engine that powers Swift Stack's field-level comparison and deficiency detection.",
-  },
-]
-
-const ctaSteps = [
-  { number: 1, title: "Analyze", body: "We review your workflows\nand verification needs" },
-  { number: 2, title: "Configure", body: "Set up for your deal types\nand document rules" },
-  { number: 3, title: "Accelerate", body: "Automated verification\nrunning on your documents" },
-]
-
-const faqItems = [
-  {
-    question: "Does Swift Stack integrate with our existing document systems?",
-    answer:
-      "Yes. We currently integrate with Microsoft SharePoint and Outlook for automated file retrieval. Google Drive integration is in progress.",
-  },
-  {
-    question: "How does Swift Stack fit into our existing workflow?",
-    answer:
-      "Swift Stack automates the repetitive parts of document review. It doesn't replace your existing process or remove human oversight. The system handles extraction and comparison. Your team handles exceptions, judgment calls, and final approval. Human-in-the-loop is a core design principle, not an afterthought.",
-  },
-  {
-    question: "How quickly are documents processed?",
-    answer:
-      "Most document checks complete in under 30 seconds. The larger the document, the longer it takes.",
-  },
-  {
-    question: "Do you support audit logs and traceability?",
-    answer:
-      "Yes. Every AI extraction, every field comparison, every routing decision, and every user action is logged. The full audit trail is available for compliance review at any time.",
-  },
-  {
-    question: "Is this built for equipment finance specifically?",
-    answer:
-      "Yes. Swift Stack was built from the ground up for equipment finance operations. We handle insurance certificate verification, equipment schedule cross-referencing, multi-asset deal logic, and serial number verification today, with lien validation and debtor search intelligence in development.",
+    label: "Compliance",
+    items: [
+      {
+        question: "Do you support audit logs and traceability?",
+        answer:
+          "Yes. Every AI extraction, every field comparison, every routing decision, and every user action is logged. The full audit trail is available for compliance review at any time.",
+      },
+      {
+        question: "Where is our data stored?",
+        answer:
+          "All documents and verification results are stored securely in your own environment within SharePoint. Your data stays in your infrastructure.",
+      },
+      {
+        question: "What happens to documents after review?",
+        answer:
+          "Documents, along with the full verification results and any analyst decisions, are stored in your environment and remain audit-ready. Nothing is deleted unless your team decides to remove it.",
+      },
+    ],
   },
 ]
 
-// ---------- Sections ----------
+// Flat list for schema
+const faqItems = faqCategories.flatMap(c => c.items)
+
+const steps = [
+  {
+    title: "Ingest",
+    brief: "Documents flow in from your existing workflow.",
+    detail: "Upload certificates of insurance directly, or connect Swift Stack to Microsoft Outlook and SharePoint for automatic document retrieval. PDFs, scanned images, and digital certificates are all supported. No changes to how your team receives documents.",
+    Animation: IngestAnimation,
+  },
+  {
+    title: "Analyze",
+    brief: "AI and code logic verify every field.",
+    detail: "Each COI is read field by field and compared against your equipment schedule and insurance requirements. All deficiencies are caught in a matter of seconds, such as mismatched serial numbers, incorrect actual cash values, wrong asset descriptions, and missing additional insured. Flagged automatically, whether it's one asset or a hundred.",
+    Animation: AnalyzeAnimation,
+  },
+  {
+    title: "Output",
+    brief: "A streamlined, exception-based review.",
+    detail: "Results are presented as a readable overlay directly on the insurance document. Every field is highlighted with the verification result, so your analyst sees exactly what passed, what deficiencies were found, and why. Your team reviews exceptions, not every line. Every document, along with its streamlined review and final verification, is stored in your environment and audit-ready.",
+    Animation: OutputAnimation,
+  },
+]
+
+// ---------- Helpers ----------
+
+
+// ---------- Section 1: Hero ----------
 
 function Hero() {
   const reduced = useReducedMotion()
 
   return (
     <section className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-28 pb-16 md:pt-40 md:pb-24">
-      {/* Line grid background */}
-      <div
-        className="bg-line-grid-fade pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      />
-      {/* Radial fade to mask grid edges */}
+      {/* Background */}
+      <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
+      <GridPulses variant="light" />
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 30%, transparent 50%, var(--color-surface) 80%)" }}
         aria-hidden="true"
       />
-
-      {/* Ambient glow behind hero */}
       <div
         className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full opacity-30 blur-[120px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
@@ -165,54 +152,45 @@ function Hero() {
         {/* Text */}
         <div>
           <motion.h1
-            className="text-gradient text-4xl font-bold leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            className="text-4xl font-bold leading-[1.1] tracking-tight text-text-primary pb-1 md:text-5xl lg:text-6xl"
+            initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.1 }}
+            transition={{ duration: 0.5, ease: EASE.easeInOut }}
           >
-            Document Intelligence for Equipment Finance
+            Intelligent COI Verification for Equipment Finance Lenders
           </motion.h1>
 
           <motion.p
             className="mt-6 max-w-lg text-lg leading-relaxed text-text-secondary"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.2 }}
+            transition={{ duration: 0.5, ease: EASE.easeInOut, delay: 0.12 }}
           >
-            Automate the pre-funding document checks between approval and payout. Less
-            manual review. Fewer missed deficiencies. Faster funding.
+            Pre-funding insurance verification that plugs into your existing process. Faster COI reviews across multi-asset deals, fewer missed deficiencies, more confident results.
           </motion.p>
 
           <motion.div
-            className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            className="mt-8"
+            initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.3 }}
+            transition={{ duration: 0.5, ease: EASE.easeInOut, delay: 0.24 }}
           >
             <Link
               href="/contact"
-              className="btn-primary inline-flex items-center justify-center px-7 py-3.5 text-sm"
+              className="btn-trace inline-flex items-center justify-center px-7 py-3.5 text-base"
             >
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href="#solutions"
-              className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-medium text-text-secondary transition-colors duration-200 hover:text-text-primary"
-            >
-              See how it works
+              <span>Get Started</span>
             </Link>
           </motion.div>
         </div>
 
-        {/* Animation — floating with glow, no border frame */}
+        {/* Animation */}
         <motion.div
           className="relative flex flex-col items-center"
           initial={reduced ? undefined : { opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: EASE.smooth, delay: 0.2 }}
         >
-          {/* Glow behind the animation */}
           <div
             className="pointer-events-none absolute inset-0 -m-12 rounded-3xl opacity-60 blur-3xl"
             style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.1), transparent 70%)" }}
@@ -223,313 +201,505 @@ function Hero() {
           </div>
         </motion.div>
       </div>
-
     </section>
   )
 }
 
-function Problem() {
-  const reduced = useReducedMotion()
+// ---------- Section 2: The Problem ----------
 
+function TheProblem() {
   return (
-    <section className="relative py-20 md:py-28">
-      {/* Subtle background tint */}
-      <div className="absolute inset-0 bg-surface-alt/50" aria-hidden="true" />
+    <section className="relative flex min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
+      {/* Grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.06) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+        }}
+        aria-hidden="true"
+      />
+      <GridPulses variant="dark" />
+      {/* Bright grid near orbs */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 400px 300px at 65% 15%, rgba(0,0,0,0.6), transparent), radial-gradient(ellipse 400px 300px at 25% 85%, rgba(0,0,0,0.5), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 400px 300px at 65% 15%, rgba(0,0,0,0.6), transparent), radial-gradient(ellipse 400px 300px at 25% 85%, rgba(0,0,0,0.5), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      {/* Radial fade */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, #0A1628 75%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — top right */}
+      <div
+        className="pointer-events-none absolute top-[15%] left-[65%] -translate-x-1/2 -translate-y-1/2 h-[550px] w-[650px] rounded-full opacity-50 blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.35), transparent 65%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — bottom left */}
+      <div
+        className="pointer-events-none absolute bottom-[10%] left-[25%] -translate-x-1/2 h-[500px] w-[600px] rounded-full opacity-45 blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(50, 180, 255, 0.3), transparent 65%)" }}
+        aria-hidden="true"
+      />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">The Problem</p>
-            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
-              Document Verification Is What Slows the Path from Approval to Payout
-            </h2>
-          </div>
+          <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">The Problem</p>
+          <h2 className="mx-auto max-w-4xl text-center text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl lg:text-4xl">
+            Pre-Funding Insurance Checks Exist for a Reason.<br />
+            The Manual Process Doesn&apos;t Have To.
+          </h2>
         </FadeIn>
 
-        <FadeIn delay={0.15}>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-text-secondary md:text-lg">
-            Between deal approval and funding, your documentation team manually verifies every document in the deal package. The rules are clear, but the work adds up.
+        <FadeIn delay={0.1}>
+          <p className="mx-auto mt-8 max-w-[700px] text-center text-base leading-relaxed text-slate-400 md:text-lg">
+            Serial numbers, coverage limits, actual cash values, endorsements, loss payee, additional insured. These fields get checked on every COI that comes through because they protect your position on the asset. On multi-asset deals, every item on the equipment schedule means more to verify, more deficiencies to catch, and more time before funding. Pre-funding insurance reviews are necessary. The way they get done can be improved.
           </p>
         </FadeIn>
-
-        {/* Problem cards with workflow animations */}
-        <motion.div
-          className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-3"
-          variants={reduced ? undefined : staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-        >
-          {problemCards.map((card) => {
-            const Animation = card.animation
-            return (
-              <motion.div
-                key={card.title}
-                variants={reduced ? undefined : staggerItem}
-                className="card-glow group p-6 text-center"
-              >
-                <div className="mx-auto mb-4 h-16 w-full max-w-[120px]">
-                  <Animation />
-                </div>
-                <p className="text-lg font-semibold text-text-primary">{card.title}</p>
-                <p className="mt-2 text-sm leading-relaxed text-text-secondary">{card.body}</p>
-              </motion.div>
-            )
-          })}
-        </motion.div>
       </div>
     </section>
   )
 }
 
+// ---------- Section 3: The Solution ----------
 
-function SolutionCard({ card }: { card: typeof solutionCards[number] }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [entryPlay, setEntryPlay] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(cardRef, { once: true, amount: 0.3 })
-
-  useEffect(() => {
-    if (inView) {
-      setEntryPlay(true)
-      const timer = setTimeout(() => setEntryPlay(false), 2500)
-      return () => clearTimeout(timer)
-    }
-  }, [inView])
-
-  const play = entryPlay || isHovered
-  const Animation = card.animation
-
+function TheSolution() {
   return (
-    <div
-      ref={cardRef}
-      className="card-shimmer group relative flex h-full flex-col p-6"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Gradient accent at top */}
-      <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.gradient} z-10`} />
+    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-20 md:pb-28">
+      {/* Grid */}
+      <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 500px 400px at 40% 30%, rgba(0,0,0,0.6), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 500px 400px at 40% 30%, rgba(0,0,0,0.6), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, var(--color-surface) 80%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — upper left */}
+      <div
+        className="pointer-events-none absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[650px] rounded-full opacity-25 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
+        aria-hidden="true"
+      />
 
-      {card.badge && (
-        <span className={`absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${card.badge === "Live Now" ? "bg-verified/10 text-verified" : "bg-accent/10 text-accent"}`}>
-          {card.badge === "Live Now" && (
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-verified opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-verified" />
-            </span>
-          )}
-          {card.badge}
-        </span>
-      )}
+      <div className="relative mx-auto max-w-7xl px-6">
+        <FadeIn>
+          <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">The Solution</p>
+          <h2 className="text-gradient mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight md:text-3xl lg:text-4xl">
+            Your Team Reviews Exceptions.<br />
+            Swift Stack Handles the Rest.
+          </h2>
+        </FadeIn>
 
-      <div className="mb-4 h-40 w-full">
-        <Animation play={play} />
+        {/* Animation */}
+        <FadeIn delay={0.15}>
+          <div className="mt-8">
+            <SolutionAnimation />
+          </div>
+        </FadeIn>
+
       </div>
-
-      <h3 className="text-xl font-semibold text-text-primary">
-        {card.title}
-      </h3>
-
-      <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-        {card.body}
-      </p>
-
-      {/* CTAs — Action primary, Learn More secondary */}
-      <div className="mt-auto flex flex-col gap-2 pt-6">
-        <Link
-          href={card.secondaryHref}
-          className="cta-arrow inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors duration-200 hover:text-accent-hover"
-        >
-          {card.secondaryCta}
-          <span className="inline-flex transition-transform duration-200">
-            <ArrowRight className="h-4 w-4" />
-          </span>
-        </Link>
-        <Link
-          href={card.href}
-          className="text-xs text-text-tertiary transition-colors duration-200 hover:text-accent"
-        >
-          {card.primaryCta}
-        </Link>
-      </div>
-    </div>
+    </section>
   )
 }
 
-function Solutions() {
+// ---------- Section 4: How It Works (Timeline) ----------
+
+function TimelineNode({ number, inView: isVisible }: { number: number; inView: boolean }) {
   const reduced = useReducedMotion()
 
   return (
-    <section id="solutions" className="py-20 md:py-28">
-      <div className="mx-auto max-w-7xl px-6">
+    <motion.div
+      className="relative z-10 flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent bg-white text-sm font-bold text-accent shadow-sm cursor-default"
+      initial={reduced ? undefined : { scale: 0, opacity: 0 }}
+      animate={isVisible || reduced ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      transition={{ duration: 0.4, ease: EASE.smooth }}
+      whileHover={{
+        scale: 1.15,
+        boxShadow: "0 0 20px 4px rgba(42, 160, 230, 0.25), 0 0 40px 8px rgba(42, 160, 230, 0.1)",
+        transition: { duration: 0.2 },
+      }}
+    >
+      {number}
+    </motion.div>
+  )
+}
+
+function StepText({ step, index, isVisible }: { step: typeof steps[number]; index: number; isVisible: boolean }) {
+  const reduced = useReducedMotion()
+
+  return (
+    <motion.div
+      className="flex flex-col justify-center"
+      initial={reduced ? undefined : { opacity: 0, x: 40 }}
+      animate={isVisible || reduced ? { opacity: 1, x: 0 } : undefined}
+      transition={{ duration: 0.6, ease: EASE.smooth, delay: 0.2 }}
+    >
+      <h3 className="text-xl font-semibold text-text-primary md:text-2xl">{step.title}</h3>
+      <p className="mt-2 max-w-md text-base font-medium leading-relaxed text-text-primary/80 md:text-lg">
+        {step.brief}
+      </p>
+      <p className="mt-3 max-w-md text-sm leading-relaxed text-text-tertiary">
+        {step.detail}
+      </p>
+    </motion.div>
+  )
+}
+
+function HowItWorks() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const step0Ref = useRef<HTMLDivElement>(null)
+  const step1Ref = useRef<HTMLDivElement>(null)
+  const step2Ref = useRef<HTMLDivElement>(null)
+  const stepRefs = [step0Ref, step1Ref, step2Ref]
+
+  // Scroll-driven timeline line
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start center", "end center"],
+  })
+  const reduced = useReducedMotion()
+  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1])
+
+  // Per-step visibility for node animations
+  const s0Visible = useInView(step0Ref, { once: true, amount: 0.3 })
+  const s1Visible = useInView(step1Ref, { once: true, amount: 0.3 })
+  const s2Visible = useInView(step2Ref, { once: true, amount: 0.3 })
+  const stepVisible = [s0Visible, s1Visible, s2Visible]
+
+  return (
+    <section id="how-it-works" className="relative overflow-visible py-16 pb-28 md:py-24 md:pb-36">
+      {/* Background grid */}
+      <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 600px 500px at 50% 40%, rgba(0,0,0,0.5), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 600px 500px at 50% 40%, rgba(0,0,0,0.5), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, var(--color-surface) 80%)" }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] rounded-full opacity-20 blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Solutions</p>
-            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
-              Built for Equipment Finance Workflows
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">How It Works</p>
+            <h2 className="text-gradient pb-2 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+              Built Around How Your Team Already Works
             </h2>
           </div>
         </FadeIn>
 
-        <motion.div
-          className="mt-12 grid gap-6 md:grid-cols-3"
-          variants={reduced ? undefined : staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-        >
-          {solutionCards.map((card) => (
-            <motion.div
-              key={card.href}
-              variants={reduced ? undefined : staggerItem}
-              className="flex"
-            >
-              <SolutionCard card={card} />
-            </motion.div>
-          ))}
-        </motion.div>
+        <div ref={sectionRef} className="relative mt-16">
+          {/* ── Mobile layout ── */}
+          <div className="md:hidden">
+            {/* Mobile timeline line */}
+            <div className="pointer-events-none absolute left-5 top-0 bottom-0" style={{ width: "2px" }}>
+              <div className="absolute inset-0 rounded-full bg-border/30" />
+              <motion.div
+                className="absolute inset-x-0 top-0 bottom-0 origin-top rounded-full"
+                style={{
+                  scaleY: reduced ? 1 : scaleY,
+                  background: "linear-gradient(180deg, var(--color-accent), rgba(42, 160, 230, 0.2))",
+                }}
+              />
+            </div>
+            {steps.map((step, i) => {
+              const Animation = step.Animation
+              return (
+                <div key={step.title} ref={stepRefs[i]} className="relative py-10 pl-14">
+                  <div className="absolute left-0 top-10">
+                    <TimelineNode number={i + 1} inView={stepVisible[i]} />
+                  </div>
+                  <div className="mb-5">
+                    <Animation />
+                  </div>
+                  <StepText step={step} index={i} isVisible={stepVisible[i]} />
+                </div>
+              )
+            })}
+          </div>
+
+          {/* ── Desktop layout: animation | timeline | text — per step, sticky parallax ── */}
+          <div className="hidden md:block">
+            <div className="relative">
+              {/* Timeline line — exactly centered */}
+              <div className="pointer-events-none absolute top-0 bottom-0" style={{ left: "calc(50% - 1px)", width: "2px" }}>
+                <div className="absolute inset-0 rounded-full bg-border/30" />
+                <motion.div
+                  className="absolute inset-x-0 top-0 bottom-0 origin-top rounded-full"
+                  style={{
+                    scaleY: reduced ? 1 : scaleY,
+                    background: "linear-gradient(180deg, var(--color-accent), rgba(42, 160, 230, 0.2))",
+                  }}
+                />
+              </div>
+
+              {steps.map((step, i) => {
+                const Animation = step.Animation
+                const mirrored = i === 1
+                return (
+                  <div key={step.title} ref={stepRefs[i]} className="min-h-[100vh] first:pt-16 last:pb-16">
+                    <div className="sticky top-[28vh] py-8 grid grid-cols-[1fr_auto_1fr] gap-8 lg:gap-12 items-center">
+                      {/* Left column */}
+                      {mirrored ? (
+                        <StepText step={step} index={i} isVisible={stepVisible[i]} />
+                      ) : (
+                        <div className="flex justify-end">
+                          <Animation />
+                        </div>
+                      )}
+                      {/* Center: timeline node */}
+                      <div className="flex justify-center" style={{ width: "44px" }}>
+                        <TimelineNode number={i + 1} inView={stepVisible[i]} />
+                      </div>
+                      {/* Right column */}
+                      {mirrored ? (
+                        <div className="flex justify-start">
+                          <Animation />
+                        </div>
+                      ) : (
+                        <StepText step={step} index={i} isVisible={stepVisible[i]} />
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
 }
 
-function AboutSwiftStack() {
+// ---------- Section 5: Results ----------
+
+const statDetails = {
+  speed: "As deal volume grows and multi-asset COIs stack up, manual review becomes a bottleneck. Your team gets that time back for resolving deficiencies, moving deals to funding, and focusing on higher-value work.",
+  accuracy: "The deficiencies that matter most in equipment lease insurance are often the easiest to miss at volume. Mismatched serial numbers, incorrect actual cash values, missing endorsements. Consistent, automated review means fewer slip through before funding.",
+}
+
+function Results() {
+  const [activeStat, setActiveStat] = useState<"speed" | "accuracy" | null>(null)
+
+  return (
+    <section id="results" className="relative flex min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
+      {/* Grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.06) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+        }}
+        aria-hidden="true"
+      />
+      {/* Bright grid near orb */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 450px 350px at 30% 30%, rgba(0,0,0,0.6), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 450px 350px at 30% 30%, rgba(0,0,0,0.6), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      {/* Radial fade */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 35%, #0A1628 75%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — left */}
+      <div
+        className="pointer-events-none absolute top-[40%] left-[25%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[600px] rounded-full opacity-35 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.22), transparent 70%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — right */}
+      <div
+        className="pointer-events-none absolute top-[35%] left-[75%] -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full opacity-25 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto max-w-4xl px-6">
+        <FadeIn>
+          <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">Results</p>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
+            What This Looks Like in Production
+          </h2>
+        </FadeIn>
+
+        <div className="mx-auto mt-16 max-w-3xl" onMouseLeave={() => setActiveStat(null)}>
+          {/* Stats row — always visible */}
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-10">
+            {/* Speed stat */}
+            <FadeIn delay={0.1}>
+              <motion.div
+                className="cursor-pointer text-center"
+                animate={{
+                  filter: activeStat === "speed"
+                    ? "drop-shadow(0 0 14px rgba(56, 182, 255, 0.35)) drop-shadow(0 0 30px rgba(42, 160, 230, 0.2))"
+                    : "drop-shadow(0 0 0px rgba(56, 182, 255, 0))",
+                }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setActiveStat(prev => prev === "speed" ? null : "speed")}
+                onMouseEnter={() => setActiveStat("speed")}
+                onMouseLeave={() => setActiveStat(null)}
+              >
+                <div
+                  className="mx-auto mb-6 h-0.5 w-12 rounded-full"
+                  style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
+                />
+                <div className="text-7xl font-bold md:text-8xl">
+                  <CountUp
+                    target={4}
+                    suffix="x"
+                    className="bg-clip-text text-transparent"
+                    style={{ backgroundImage: "linear-gradient(135deg, #4DB8F0 0%, #2AA0E6 50%, #38B6FF 100%)" }}
+                  />
+                </div>
+                <p className="mt-4 text-lg font-semibold text-white">Faster COI Reviews</p>
+              </motion.div>
+            </FadeIn>
+
+            {/* Divider */}
+            <div className="flex items-center justify-center" aria-hidden="true">
+              <div
+                className="h-24 w-px md:h-32"
+                style={{ background: "linear-gradient(180deg, transparent, rgba(42, 160, 230, 0.3), transparent)" }}
+              />
+            </div>
+
+            {/* Accuracy stat */}
+            <FadeIn delay={0.2}>
+              <motion.div
+                className="cursor-pointer text-center"
+                animate={{
+                  filter: activeStat === "accuracy"
+                    ? "drop-shadow(0 0 14px rgba(56, 182, 255, 0.35)) drop-shadow(0 0 30px rgba(42, 160, 230, 0.2))"
+                    : "drop-shadow(0 0 0px rgba(56, 182, 255, 0))",
+                }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setActiveStat(prev => prev === "accuracy" ? null : "accuracy")}
+                onMouseEnter={() => setActiveStat("accuracy")}
+                onMouseLeave={() => setActiveStat(null)}
+              >
+                <div
+                  className="mx-auto mb-6 h-0.5 w-12 rounded-full"
+                  style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
+                />
+                <div className="text-7xl font-bold md:text-8xl">
+                  <CountUp
+                    target={99}
+                    suffix="%"
+                    className="bg-clip-text text-transparent"
+                    style={{ backgroundImage: "linear-gradient(135deg, #4DB8F0 0%, #2AA0E6 50%, #38B6FF 100%)" }}
+                  />
+                </div>
+                <p className="mt-4 text-lg font-semibold text-white">Deficiency Detection Accuracy</p>
+              </motion.div>
+            </FadeIn>
+          </div>
+
+          {/* Active indicator line */}
+          <div className="relative mt-8">
+            <div
+              className="h-px w-full"
+              style={{ background: "linear-gradient(90deg, transparent 5%, rgba(42, 160, 230, 0.15) 50%, transparent 95%)" }}
+            />
+            {/* Sliding highlight */}
+            <motion.div
+              className="absolute top-0 h-px"
+              style={{ background: "linear-gradient(90deg, transparent, rgba(56, 182, 255, 0.6), transparent)" }}
+              animate={{
+                left: activeStat === "speed" ? "0%" : activeStat === "accuracy" ? "50%" : "25%",
+                width: activeStat ? "50%" : "0%",
+                opacity: activeStat ? 1 : 0,
+              }}
+              transition={{ duration: 0.35, ease: EASE.smooth }}
+            />
+          </div>
+
+          {/* Shared detail area — fixed height to prevent layout shift */}
+          <div className="relative h-24 md:h-20">
+            <AnimatePresence mode="wait">
+              {activeStat && (
+                <motion.div
+                  key={activeStat}
+                  className="absolute inset-x-0 top-0 mx-auto max-w-xl pt-6 text-center"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25, ease: EASE.smooth }}
+                >
+                  <p className="text-sm leading-relaxed text-slate-400 md:text-base">
+                    {statDetails[activeStat]}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ---------- Section 6: Testimonial ----------
+
+function Testimonial() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative flex min-h-screen flex-col justify-center py-14 md:py-20">
-      <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
-
-      <div className="relative mx-auto max-w-5xl px-6">
-        <FadeIn>
-          <div className="text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">About Swift Stack</p>
-            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-              Built by People Who Know This Work
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-text-secondary">
-              Swift Stack was built alongside the documentation, funding, and operations teams who live these workflows every day.
-            </p>
-          </div>
-        </FadeIn>
-
-        <motion.div
-          className="mt-12 grid gap-8 md:grid-cols-2"
-          variants={reduced ? undefined : staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-        >
-          {teamMembers.map((member) => (
-            <motion.div
-              key={member.name}
-              variants={reduced ? undefined : staggerItem}
-              className="card-glow flex flex-col items-center rounded-2xl border border-border p-8 text-center"
-            >
-              <div className="mb-4 h-24 w-24 overflow-hidden rounded-full border-2 border-border bg-surface-alt">
-                <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-text-tertiary">
-                  {member.name.split(" ").map(n => n[0]).join("")}
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold text-text-primary">{member.name}</h3>
-              <p className="text-sm font-medium text-accent">{member.title}</p>
-              <p className="mt-3 text-sm leading-relaxed text-text-secondary">{member.bio}</p>
-              <a
-                href={member.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-text-tertiary transition-colors duration-200 hover:text-accent"
-              >
-                <Linkedin className="h-4 w-4" />
-                LinkedIn
-              </a>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-function WhySwiftStack() {
-  return (
-    <section className="relative py-16 md:py-24">
-      <div className="absolute inset-0 bg-surface-alt/40" aria-hidden="true" />
-
-      <div className="relative mx-auto max-w-3xl px-6">
-        <FadeIn>
-          <div className="text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Why Swift Stack</p>
-            <h2 className="text-gradient text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-              Why We Build What We Build
-            </h2>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.15}>
-          <div className="mt-8 space-y-6 text-center">
-            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
-              We believe operational efficiency unlocks human potential. When your team isn&apos;t buried in repetitive document review, they&apos;re more focused, more alert, and more present for the work that actually requires their judgment.
-            </p>
-            <p className="text-base leading-relaxed text-text-secondary md:text-lg">
-              Swift Stack is shaped by the people who live these workflows every day. The documentation, funding, and operations teams who do this work are the ones driving what we build and how we build it.
-            </p>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-const testimonials = [
-  {
-    quote: "Swift Stack cut our COI review time by 75%. What used to take our team hours of manual checking now happens in minutes, with higher accuracy than we ever achieved by hand.",
-    name: "Placeholder Name",
-    title: "VP Operations",
-    company: "Mid-Market Equipment Finance Lender",
-  },
-]
-
-function Testimonials() {
-  return (
-    <section className="relative py-14 md:py-20">
-      <div className="mx-auto max-w-4xl px-6">
-        <FadeIn>
-          <div className="text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">What Our Clients Say</p>
-          </div>
-        </FadeIn>
-
-        <FadeIn>
-          <div className="mt-8 rounded-2xl border border-border bg-surface p-8 md:p-12">
-            <svg className="mb-6 h-8 w-8 text-accent opacity-40" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
-            </svg>
-            <blockquote className="text-lg leading-relaxed text-text-primary md:text-xl">
-              {testimonials[0].quote}
-            </blockquote>
-            <div className="mt-6 flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
-                {testimonials[0].name.split(" ").map(n => n[0]).join("")}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-text-primary">{testimonials[0].name}</p>
-                <p className="text-sm text-text-secondary">{testimonials[0].title}, {testimonials[0].company}</p>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-function FAQ() {
-  return (
-    <section className="relative py-20 md:py-28">
-      {/* Dot grid background for texture */}
+    <section className="relative overflow-hidden py-16 md:py-24">
+      {/* Grid */}
+      <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
-        className="bg-dot-grid-fade pointer-events-none absolute inset-0 opacity-40"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 400px 300px at 50% 50%, rgba(0,0,0,0.5), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 400px 300px at 50% 50%, rgba(0,0,0,0.5), transparent)",
+        }}
         aria-hidden="true"
       />
       <div
@@ -537,133 +707,208 @@ function FAQ() {
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, var(--color-surface) 80%)" }}
         aria-hidden="true"
       />
+      {/* Glow orb — center */}
+      <div
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-20 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.12), transparent 70%)" }}
+        aria-hidden="true"
+      />
 
       <div className="relative mx-auto max-w-3xl px-6">
-        <FadeIn>
-          <div className="mb-10 text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">FAQ</p>
-            <h2 className="text-gradient text-3xl font-bold tracking-tight md:text-4xl">
-              Common Questions
-            </h2>
-          </div>
-        </FadeIn>
+        <motion.div
+          className="relative rounded-2xl border border-border/60 bg-surface px-8 py-10 md:px-12 md:py-14"
+          initial={reduced ? undefined : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, ease: EASE.easeInOut }}
+        >
+          {/* Accent top line */}
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-1/2 rounded-full"
+            style={{ background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }}
+            aria-hidden="true"
+          />
 
-        <FadeIn delay={0.1}>
-          <Accordion items={faqItems} />
-        </FadeIn>
+          <div className="text-center">
+            {/* Decorative quote mark */}
+            <svg className="mx-auto mb-6 h-10 w-10 text-accent opacity-50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
+            </svg>
+
+            <blockquote className="text-xl leading-relaxed text-text-primary md:text-2xl">
+              &ldquo;Swift Stack made our COI renewal reviews faster and more consistent, with better visibility into coverage gaps. They were responsive and easy to work with, helping us save time and strengthen risk controls.&rdquo;
+            </blockquote>
+
+            <p className="mt-6 text-sm font-semibold text-text-primary">
+              Carrie Freeman, Director of Operations
+            </p>
+            <p className="mt-1 text-sm text-text-secondary">
+              Dynamic Capital
+            </p>
+
+            <Link
+              href="/case-studies/dynamic-capital"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors duration-200 hover:text-accent-hover"
+            >
+              Read the full case study
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
-function CTASteps() {
-  const [activeStep, setActiveStep] = useState(-1)
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.3 })
+// ---------- Section 7: FAQ ----------
 
-  useEffect(() => {
-    if (!inView) return
-    // Play once: advance through steps, then stop at the end
-    let step = -1
-    const interval = setInterval(() => {
-      step += 1
-      setActiveStep(step)
-      if (step >= 2) clearInterval(interval)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [inView])
+function FAQ() {
+  const [activeTab, setActiveTab] = useState(0)
 
   return (
-    <div ref={ref} className="mx-auto mt-10 max-w-2xl">
-      {/* Step circles + connectors + text aligned together */}
-      <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-0">
-        {ctaSteps.map((step, i) => (
-          <Fragment key={i}>
-            {/* Step column: circle + text */}
-            <div className="flex flex-col items-center">
-              <motion.div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold"
-                animate={{
-                  borderColor: i <= activeStep ? "rgba(42, 160, 230, 1)" : "rgba(255, 255, 255, 0.15)",
-                  backgroundColor: i <= activeStep ? "rgba(42, 160, 230, 0.15)" : "transparent",
-                  color: i <= activeStep ? "#4DB8F0" : "rgba(255, 255, 255, 0.4)",
-                }}
-                transition={{ duration: 0.4, ease: EASE.smooth }}
+    <section id="faq" className="relative min-h-screen overflow-hidden py-20 md:py-28">
+      {/* Grid */}
+      <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 400px 350px at 70% 60%, rgba(0,0,0,0.6), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 400px 350px at 70% 60%, rgba(0,0,0,0.6), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, var(--color-surface) 80%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — lower right */}
+      <div
+        className="pointer-events-none absolute top-[55%] left-[70%] -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full opacity-20 blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-3xl px-6">
+        <FadeIn>
+          <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">FAQ</p>
+          <h2 className="text-gradient text-center text-3xl font-bold tracking-tight md:text-4xl">
+            What Lenders Ask Us
+          </h2>
+        </FadeIn>
+
+        {/* Category tabs */}
+        <FadeIn delay={0.1}>
+          <div className="relative mt-10 grid grid-cols-3 gap-4 mx-auto max-w-md">
+            {faqCategories.map((cat, i) => (
+              <button
+                key={cat.label}
+                onClick={() => setActiveTab(i)}
+                className={`relative cursor-pointer rounded-full px-6 py-2 text-center text-sm font-medium transition-all duration-250 ${
+                  activeTab === i
+                    ? "text-white"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
               >
-                {step.number}
-              </motion.div>
-              <motion.div
-                className="mt-3 max-w-[200px] text-center"
-                animate={{ opacity: i <= activeStep ? 1 : 0.3 }}
-                transition={{ duration: 0.4 }}
-              >
-                <p className="text-sm font-medium text-white">{step.title}</p>
-                <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-400">{step.body}</p>
-              </motion.div>
-            </div>
-            {/* Connector line between steps */}
-            {i < ctaSteps.length - 1 && (
-              <div className="relative mx-3 mt-5 h-px flex-1 min-w-[40px] bg-white/10 self-start">
-                <motion.div
-                  className="absolute inset-y-0 left-0 h-px bg-accent"
-                  animate={{ width: activeStep > i ? "100%" : "0%" }}
-                  transition={{ duration: 0.6, ease: EASE.smooth }}
-                />
-              </div>
-            )}
-          </Fragment>
-        ))}
+                {/* Active pill background */}
+                {activeTab === i && (
+                  <motion.span
+                    layoutId="faq-tab"
+                    className="absolute inset-0 rounded-full bg-accent"
+                    transition={{ duration: 0.3, ease: EASE.smooth }}
+                  />
+                )}
+                <span className="relative z-10">{cat.label}</span>
+              </button>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Tab content */}
+        <div className="mt-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: EASE.smooth }}
+            >
+              <Accordion items={faqCategories[activeTab].items} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
-function CTA() {
+// ---------- Section 8: CTA ----------
+
+function CTASection() {
   return (
-    <section id="cta" className="py-16 md:py-24">
-      <div className="mx-auto w-full max-w-7xl px-6">
-        <FadeIn>
-          <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-16 text-center md:px-16 md:py-20">
-            {/* Ambient glow inside CTA */}
-            <div
-              className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[300px] w-[500px] rounded-full opacity-20 blur-[100px]"
-              style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.4), transparent 70%)" }}
-              aria-hidden="true"
-            />
+    <section id="cta" className="relative overflow-hidden" style={{ backgroundColor: "#0A1628" }}>
+      {/* Grid — covers entire section including fade zone */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.06) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+        }}
+        aria-hidden="true"
+      />
+      {/* Bright grid near glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          backgroundPosition: "center center",
+          maskImage: "radial-gradient(ellipse 500px 400px at 50% 60%, rgba(0,0,0,0.5), transparent)",
+          WebkitMaskImage: "radial-gradient(ellipse 500px 400px at 50% 60%, rgba(0,0,0,0.5), transparent)",
+        }}
+        aria-hidden="true"
+      />
+      <GridPulses variant="dark" />
+      {/* Radial fade to edges */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at 50% 60%, transparent 30%, #0A1628 75%)" }}
+        aria-hidden="true"
+      />
+      {/* Glow orb — center */}
+      <div
+        className="pointer-events-none absolute top-[55%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[650px] rounded-full opacity-40 blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.25), transparent 65%)" }}
+        aria-hidden="true"
+      />
 
-            <div className="relative">
-              <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-                Get Started
-              </h2>
+      {/* CTA content */}
+      <div className="relative flex min-h-[80vh] items-center pt-28 pb-16 md:pt-36 md:pb-20">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <FadeIn>
+            <h2 className="text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+              Fewer Missed Deficiencies. Faster Funding.
+            </h2>
 
-              <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-300 md:text-lg">
-                COI verification is live and in production. Lien validation and debtor search intelligence are on the way. Get in touch to see how Swift Stack fits into your document verification workflow.
-              </p>
+            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-slate-400 md:text-lg">
+              See what changes when your team reviews exceptions instead of every field on every document.
+            </p>
 
-              <CTASteps />
-
-              <div className="mt-10">
-                <Link
-                  href="/contact"
-                  className="btn-primary inline-flex items-center justify-center rounded-xl px-8 py-4 text-sm"
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
-
-              <p className="mt-6 text-sm text-gray-400">
-                Or email us directly:{" "}
-                <a
-                  href="mailto:hello@swiftstacksolutions.com"
-                  className="font-medium text-white underline transition-colors duration-200 hover:text-accent"
-                >
-                  hello@swiftstacksolutions.com
-                </a>
-              </p>
+            <div className="mt-8">
+              <Link
+                href="/contact"
+                className="btn-trace inline-flex items-center justify-center px-8 py-3.5 text-base"
+              >
+                <span>Get Started</span>
+              </Link>
             </div>
-          </div>
-        </FadeIn>
+
+          </FadeIn>
+        </div>
       </div>
     </section>
   )
@@ -671,8 +916,19 @@ function CTA() {
 
 // ---------- Divider ----------
 
-function SectionDivider() {
-  return <AnimatedDivider />
+function HorizonLine() {
+  return (
+    <div className="relative" aria-hidden="true">
+      <div
+        className="h-px"
+        style={{ background: "linear-gradient(90deg, transparent 5%, rgba(42, 160, 230, 0.35) 50%, transparent 95%)" }}
+      />
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-20 w-[600px] rounded-full blur-3xl"
+        style={{ background: "rgba(42, 160, 230, 0.06)" }}
+      />
+    </div>
+  )
 }
 
 // ---------- Page ----------
@@ -682,19 +938,20 @@ export default function HomePage() {
     <>
       <FAQSchema items={faqItems} />
       <Hero />
-      <SectionDivider />
-      <Problem />
-      <SectionDivider />
-      <Solutions />
-      {/* <SectionDivider />
-      <AboutSwiftStack /> */}
-      <SectionDivider />
-      <WhySwiftStack />
-      {/* <SectionDivider />
-      <Testimonials />
-      <SectionDivider /> */}
+      <HorizonLine />
+      <TheProblem />
+      <HorizonLine />
+      <TheSolution />
+      <HorizonLine />
+      <HowItWorks />
+      <HorizonLine />
+      <Results />
+      <HorizonLine />
+      <Testimonial />
+      <HorizonLine />
       <FAQ />
-      <CTA />
+      {/* No HorizonLine — CTA gradient fade handles the transition */}
+      <CTASection />
     </>
   )
 }

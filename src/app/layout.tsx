@@ -7,16 +7,35 @@ import { OrganizationSchema } from "@/components/schema"
 
 export const metadata: Metadata = {
   title: {
-    default: "Document Verification for Equipment Finance | Swift Stack",
+    default: "Intelligent COI Verification for Equipment Finance | Swift Stack",
     template: "%s | Swift Stack",
   },
   description:
-    "Swift Stack automates COI verification, lien validation, and debtor search analysis for equipment finance lenders. 4x faster document verification.",
+    "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
   metadataBase: new URL("https://swiftstacksolutions.com"),
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "Swift Stack Solutions",
+    title: "Intelligent COI Verification for Equipment Finance | Swift Stack",
+    description:
+      "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
+    url: "https://swiftstacksolutions.com/",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Swift Stack Solutions - COI Verification for Equipment Finance",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Intelligent COI Verification for Equipment Finance | Swift Stack",
+    description:
+      "Pre-funding COI verification for equipment finance lenders. Serial numbers, coverage limits, endorsements, and deficiencies verified across multi-asset deals. 4x faster reviews.",
+    images: ["/og-image.png"],
   },
 }
 

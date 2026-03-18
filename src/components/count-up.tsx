@@ -9,6 +9,7 @@ interface CountUpProps {
   suffix?: string
   duration?: number
   className?: string
+  style?: React.CSSProperties
 }
 
 export function CountUp({
@@ -16,6 +17,7 @@ export function CountUp({
   suffix = "",
   duration = DURATION.countUp,
   className,
+  style,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
@@ -51,7 +53,7 @@ export function CountUp({
   }, [isInView, target, duration, reduced])
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={className} style={style}>
       {value}
       {suffix}
     </span>
