@@ -345,7 +345,7 @@ function DocumentPanel({ scenario, clicked }: DocPanelProps) {
   }
 
   return (
-    <div className="hidden md:block">
+    <div className="-mx-4 md:mx-0">
       <svg
         viewBox={`0 0 ${DW} ${DH}`}
         fill="none"
@@ -736,7 +736,7 @@ function ResultsPanel({ scenario, clicked }: ResultsPanelProps) {
   const assetExpandIndex = clicked && scenario.clickTarget === "asset" ? scenario.clickIndex : -1
 
   return (
-    <div className="rounded-xl border border-border bg-surface overflow-hidden">
+    <div className="hidden md:block rounded-xl border border-border bg-surface overflow-hidden">
       <div className="flex items-center gap-2.5 border-b border-border px-3 py-2.5">
         <div className="h-2 w-2 rounded-full" style={{ background: "var(--color-accent)" }} />
         <span className="text-xs font-bold tracking-tight text-text-primary">Verification Results</span>
@@ -782,7 +782,7 @@ function StaticSolution() {
   const s = scenarios[0]
   return (
     <div className="mx-auto max-w-[60rem] grid items-start gap-4 md:grid-cols-[5fr_3fr] md:gap-5">
-      <div className="hidden md:block">
+      <div>
         <svg viewBox={`0 0 ${DW} ${DH}`} fill="none" className="w-full h-auto" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.08))" }}>
           <rect x={0} y={0} width={DW} height={DH} rx={4} fill="white" stroke="var(--color-border)" strokeWidth={1} />
           <rect x={0} y={0} width={DW} height={44} rx={4} fill="#1a1a2e" />
@@ -791,7 +791,7 @@ function StaticSolution() {
           <text x={16} y={36} fontSize={8} fill="rgba(255,255,255,0.6)" fontFamily={FONT}>CERTIFICATE OF LIABILITY INSURANCE</text>
         </svg>
       </div>
-      <div className="rounded-xl border border-border bg-surface overflow-hidden">
+      <div className="hidden md:block rounded-xl border border-border bg-surface overflow-hidden">
         <div className="flex items-center gap-2 border-b border-border px-2.5 py-2">
           <div className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
           <span className="text-[11px] font-semibold text-text-primary">Verification Results</span>

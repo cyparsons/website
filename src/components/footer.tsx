@@ -18,35 +18,31 @@ export function Footer() {
             <Logo textColor="#FFFFFF" className="h-7 w-auto" />
           </Link>
 
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm md:flex-nowrap md:justify-end">
             <a
               href="/#solution"
               className="text-gray-400 transition-colors duration-200 hover:text-white"
             >
               Solution
             </a>
-            <span className="text-gray-600" aria-hidden="true">&middot;</span>
             <a
               href="/#how-it-works"
               className="text-gray-400 transition-colors duration-200 hover:text-white"
             >
               How It Works
             </a>
-            <span className="text-gray-600" aria-hidden="true">&middot;</span>
             <a
               href="/#results"
               className="text-gray-400 transition-colors duration-200 hover:text-white"
             >
               Results
             </a>
-            <span className="text-gray-600" aria-hidden="true">&middot;</span>
             <a
               href="/#faq"
               className="text-gray-400 transition-colors duration-200 hover:text-white"
             >
               FAQ
             </a>
-            <span className="text-gray-600" aria-hidden="true">&middot;</span>
             <Link
               href="/blog"
               className="text-gray-400 transition-colors duration-200 hover:text-white"

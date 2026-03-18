@@ -155,10 +155,10 @@ export default function ContactPage() {
                   <p className="mt-6 text-sm text-text-tertiary">
                     In the meantime, follow along where we share the latest.
                   </p>
-                  <div className="mt-4 flex items-center gap-4">
+                  <div className="mt-4 flex flex-col gap-3 w-full md:flex-row md:w-auto md:gap-4">
                     <Link
                       href="/blog"
-                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-sm"
+                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-3 text-sm"
                     >
                       <span>Read our blog</span>
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -167,7 +167,7 @@ export default function ContactPage() {
                       href="https://www.linkedin.com/company/swift-stack-solutions/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-sm"
+                      className="btn-trace inline-flex items-center justify-center gap-1.5 px-5 py-3 text-sm"
                     >
                       <span>Follow on LinkedIn</span>
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -203,7 +203,7 @@ export default function ContactPage() {
                       name="name"
                       type="text"
                       onChange={() => clearFieldError("name")}
-                      className={`w-full rounded-lg border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
+                      className={`w-full rounded-lg border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
                         fieldErrors.name
                           ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/30"
                           : "border-border focus:border-accent focus:ring-accent"
@@ -225,7 +225,7 @@ export default function ContactPage() {
                       name="email"
                       type="email"
                       onChange={() => clearFieldError("email")}
-                      className={`w-full rounded-lg border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
+                      className={`w-full rounded-lg border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
                         fieldErrors.email
                           ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/30"
                           : "border-border focus:border-accent focus:ring-accent"
@@ -247,7 +247,7 @@ export default function ContactPage() {
                       name="company"
                       type="text"
                       onChange={() => clearFieldError("company")}
-                      className={`w-full rounded-lg border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
+                      className={`w-full rounded-lg border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:outline-none focus:ring-1 ${
                         fieldErrors.company
                           ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/30"
                           : "border-border focus:border-accent focus:ring-accent"
@@ -268,7 +268,7 @@ export default function ContactPage() {
                       id="jobtitle"
                       name="jobtitle"
                       type="text"
-                      className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                      className="w-full rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                       placeholder="VP Operations"
                     />
                   </div>
@@ -282,7 +282,7 @@ export default function ContactPage() {
                       id="message"
                       name="message"
                       rows={4}
-                      className="w-full resize-none rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                      className="w-full resize-none rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                       placeholder="Tell us about your COI review process, deal volume, or what you're looking to improve"
                     />
                   </div>

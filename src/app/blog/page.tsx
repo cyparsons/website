@@ -49,7 +49,7 @@ export default function BlogPage() {
           <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">
             Our Blog
           </p>
-          <h1 className="text-gradient text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+          <h1 className="text-gradient pb-2 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
             Insights on Equipment Finance Operations
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary">
@@ -64,7 +64,7 @@ export default function BlogPage() {
               <FadeIn key={post.slug} delay={i * 0.1}>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="card-modern group flex h-full flex-col p-6 md:p-8"
+                  className="card-modern group flex h-full flex-col p-4 md:p-6"
                 >
                   <div className="flex items-center gap-3 text-sm text-text-tertiary">
                     <span>{post.author}</span>

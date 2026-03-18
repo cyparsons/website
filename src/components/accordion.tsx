@@ -78,7 +78,7 @@ export function Accordion({ items }: AccordionProps) {
                   }}
                   className="overflow-hidden"
                 >
-                  <div className="px-6 pb-6 pl-[4.25rem] text-sm leading-relaxed text-text-secondary md:text-base">
+                  <div className="px-6 pb-6 pl-6 md:pl-[4.25rem] text-sm leading-relaxed text-text-secondary md:text-base">
                     {item.answer}
                   </div>
                 </motion.div>

@@ -143,16 +143,16 @@ function Hero() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full opacity-30 blur-[120px]"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-30 blur-[120px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-[1fr_1.5fr] md:gap-10 lg:gap-16">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 md:grid-cols-[1fr_1.5fr] md:gap-10 md:px-6 lg:gap-16">
         {/* Text */}
-        <div>
+        <div className="text-center md:text-left">
           <motion.h1
-            className="text-4xl font-bold leading-[1.1] tracking-tight text-text-primary pb-1 md:text-5xl lg:text-6xl"
+            className="text-3xl font-bold leading-[1.1] tracking-tight text-text-primary pb-1 md:text-5xl lg:text-6xl"
             initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE.easeInOut }}
@@ -161,7 +161,7 @@ function Hero() {
           </motion.h1>
 
           <motion.p
-            className="mt-6 max-w-lg text-lg leading-relaxed text-text-secondary"
+            className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-text-secondary md:mx-0 md:mt-6 md:text-lg"
             initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE.easeInOut, delay: 0.12 }}
@@ -169,8 +169,25 @@ function Hero() {
             Pre-funding insurance verification that plugs into your existing process. Faster COI reviews across multi-asset deals, fewer missed deficiencies, more confident results.
           </motion.p>
 
+          {/* Animation - between subtext and CTA on mobile, beside text on desktop */}
           <motion.div
-            className="mt-8"
+            className="relative mt-6 flex flex-col items-center md:hidden"
+            initial={reduced ? undefined : { opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: EASE.smooth, delay: 0.2 }}
+          >
+            <div
+              className="pointer-events-none absolute inset-0 -m-6 md:-m-12 rounded-3xl opacity-60 blur-3xl"
+              style={{ background: "radial-gradient(ellipse at center, rgba(42, 160, 230, 0.1), transparent 70%)" }}
+              aria-hidden="true"
+            />
+            <div className="relative w-[85%]">
+              <HeroAnimation />
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="mt-7 md:mt-8"
             initial={reduced ? undefined : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE.easeInOut, delay: 0.24 }}
@@ -184,9 +201,9 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Animation */}
+        {/* Animation - desktop only (right column) */}
         <motion.div
-          className="relative flex flex-col items-center"
+          className="relative hidden md:flex flex-col items-center"
           initial={reduced ? undefined : { opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: EASE.smooth, delay: 0.2 }}
@@ -209,7 +226,7 @@ function Hero() {
 
 function TheProblem() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
+    <section className="relative hidden md:flex md:min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
       {/* Grid */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -255,9 +272,8 @@ function TheProblem() {
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">The Problem</p>
-          <h2 className="mx-auto max-w-4xl text-center text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl lg:text-4xl">
-            Pre-Funding Insurance Checks Exist for a Reason.<br />
-            The Manual Process Doesn&apos;t Have To.
+          <h2 className="mx-auto max-w-5xl text-center text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl lg:text-5xl">
+            Pre-Funding Insurance Checks Exist for a Reason. The Manual Process Doesn&apos;t Have To.
           </h2>
         </FadeIn>
 
@@ -275,7 +291,7 @@ function TheProblem() {
 
 function TheSolution() {
   return (
-    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-20 md:pb-28">
+    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-20 md:pb-28 scroll-mt-20">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -296,7 +312,7 @@ function TheSolution() {
       />
       {/* Glow orb — upper left */}
       <div
-        className="pointer-events-none absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[650px] rounded-full opacity-25 blur-[120px]"
+        className="pointer-events-none absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 h-[250px] w-[325px] md:h-[500px] md:w-[650px] rounded-full opacity-25 blur-[120px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -304,7 +320,7 @@ function TheSolution() {
       <div className="relative mx-auto max-w-7xl px-6">
         <FadeIn>
           <p className="mb-4 text-center text-sm font-medium uppercase tracking-widest text-accent">The Solution</p>
-          <h2 className="text-gradient mx-auto max-w-3xl text-center text-2xl font-bold leading-tight tracking-tight md:text-3xl lg:text-4xl">
+          <h2 className="text-gradient mx-auto max-w-3xl text-center text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
             Your Team Reviews Exceptions.<br />
             Swift Stack Handles the Rest.
           </h2>
@@ -371,6 +387,7 @@ function HowItWorks() {
   const step1Ref = useRef<HTMLDivElement>(null)
   const step2Ref = useRef<HTMLDivElement>(null)
   const stepRefs = [step0Ref, step1Ref, step2Ref]
+  const [mobileStep, setMobileStep] = useState(0)
 
   // Scroll-driven timeline line
   const { scrollYProgress } = useScroll({
@@ -387,7 +404,7 @@ function HowItWorks() {
   const stepVisible = [s0Visible, s1Visible, s2Visible]
 
   return (
-    <section id="how-it-works" className="relative overflow-visible py-16 pb-28 md:py-24 md:pb-36">
+    <section id="how-it-works" className="relative py-16 pb-28 md:py-24 md:pb-36 scroll-mt-20">
       {/* Background grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -407,7 +424,7 @@ function HowItWorks() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] rounded-full opacity-20 blur-[140px]"
+        className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-20 blur-[140px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -416,40 +433,65 @@ function HowItWorks() {
         <FadeIn>
           <div className="mx-auto max-w-2xl text-center">
             <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">How It Works</p>
-            <h2 className="text-gradient pb-2 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+            <h2 className="text-gradient pb-3 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
               Built Around How Your Team Already Works
             </h2>
           </div>
         </FadeIn>
 
         <div ref={sectionRef} className="relative mt-16">
-          {/* ── Mobile layout ── */}
-          <div className="md:hidden">
-            {/* Mobile timeline line */}
-            <div className="pointer-events-none absolute left-5 top-0 bottom-0" style={{ width: "2px" }}>
-              <div className="absolute inset-0 rounded-full bg-border/30" />
-              <motion.div
-                className="absolute inset-x-0 top-0 bottom-0 origin-top rounded-full"
-                style={{
-                  scaleY: reduced ? 1 : scaleY,
-                  background: "linear-gradient(180deg, var(--color-accent), rgba(42, 160, 230, 0.2))",
-                }}
-              />
+          {/* ── Mobile layout: tab-based ── */}
+          <div className="md:hidden overflow-hidden">
+            {/* Step tabs */}
+            <div className="grid grid-cols-3 gap-2">
+              {steps.map((step, i) => (
+                <button
+                  key={step.title}
+                  onClick={() => setMobileStep(i)}
+                  className={`relative cursor-pointer rounded-xl px-3 py-3 text-center transition-all duration-250 ${
+                    mobileStep === i
+                      ? "text-white"
+                      : "text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  {mobileStep === i && (
+                    <motion.span
+                      layoutId="how-step-tab"
+                      className="absolute inset-0 rounded-xl bg-accent"
+                      transition={{ duration: 0.3, ease: EASE.smooth }}
+                    />
+                  )}
+                  <span className="relative z-10 flex flex-col items-center gap-1">
+                    <span className="text-xs font-bold">{i + 1}</span>
+                    <span className="text-sm font-semibold">{step.title}</span>
+                  </span>
+                </button>
+              ))}
             </div>
-            {steps.map((step, i) => {
-              const Animation = step.Animation
-              return (
-                <div key={step.title} ref={stepRefs[i]} className="relative py-10 pl-14">
-                  <div className="absolute left-0 top-10">
-                    <TimelineNode number={i + 1} inView={stepVisible[i]} />
-                  </div>
-                  <div className="mb-5">
-                    <Animation />
-                  </div>
-                  <StepText step={step} index={i} isVisible={stepVisible[i]} />
+
+            {/* Active step content — min-height prevents layout shift between tabs */}
+            <div className="mt-8 min-h-[520px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mobileStep}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: EASE.smooth }}
+              >
+                <div className="mb-5">
+                  {(() => { const Animation = steps[mobileStep].Animation; return <Animation /> })()}
                 </div>
-              )
-            })}
+                <h3 className="text-lg font-semibold text-text-primary">{steps[mobileStep].title}</h3>
+                <p className="mt-2 text-base font-medium leading-relaxed text-text-primary/80">
+                  {steps[mobileStep].brief}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-text-tertiary">
+                  {steps[mobileStep].detail}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            </div>
           </div>
 
           {/* ── Desktop layout: animation | timeline | text — per step, sticky parallax ── */}
@@ -514,9 +556,10 @@ const statDetails = {
 
 function Results() {
   const [activeStat, setActiveStat] = useState<"speed" | "accuracy" | null>(null)
+  const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
 
   return (
-    <section id="results" className="relative flex min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
+    <section id="results" className="relative flex items-center md:min-h-screen overflow-hidden py-12 pb-20 md:py-28 scroll-mt-20" style={{ backgroundColor: "#0A1628" }}>
       {/* Grid */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -566,9 +609,9 @@ function Results() {
           </h2>
         </FadeIn>
 
-        <div className="mx-auto mt-16 max-w-3xl" onMouseLeave={() => setActiveStat(null)}>
+        <div className="mx-auto mt-16 max-w-3xl" onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}>
           {/* Stats row — always visible */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-10">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-6 md:items-center md:gap-10">
             {/* Speed stat */}
             <FadeIn delay={0.1}>
               <motion.div
@@ -580,8 +623,8 @@ function Results() {
                 }}
                 transition={{ duration: 0.25 }}
                 onClick={() => setActiveStat(prev => prev === "speed" ? null : "speed")}
-                onMouseEnter={() => setActiveStat("speed")}
-                onMouseLeave={() => setActiveStat(null)}
+                onMouseEnter={isTouch ? undefined : () => setActiveStat("speed")}
+                onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}
               >
                 <div
                   className="mx-auto mb-6 h-0.5 w-12 rounded-full"
@@ -595,7 +638,7 @@ function Results() {
                     style={{ backgroundImage: "linear-gradient(135deg, #4DB8F0 0%, #2AA0E6 50%, #38B6FF 100%)" }}
                   />
                 </div>
-                <p className="mt-4 text-lg font-semibold text-white">Faster COI Reviews</p>
+                <p className="mt-4 min-h-[3.5rem] text-base font-semibold text-white md:min-h-0 md:text-lg">Faster COI Reviews</p>
               </motion.div>
             </FadeIn>
 
@@ -618,8 +661,8 @@ function Results() {
                 }}
                 transition={{ duration: 0.25 }}
                 onClick={() => setActiveStat(prev => prev === "accuracy" ? null : "accuracy")}
-                onMouseEnter={() => setActiveStat("accuracy")}
-                onMouseLeave={() => setActiveStat(null)}
+                onMouseEnter={isTouch ? undefined : () => setActiveStat("accuracy")}
+                onMouseLeave={isTouch ? undefined : () => setActiveStat(null)}
               >
                 <div
                   className="mx-auto mb-6 h-0.5 w-12 rounded-full"
@@ -633,7 +676,7 @@ function Results() {
                     style={{ backgroundImage: "linear-gradient(135deg, #4DB8F0 0%, #2AA0E6 50%, #38B6FF 100%)" }}
                   />
                 </div>
-                <p className="mt-4 text-lg font-semibold text-white">Deficiency Detection Accuracy</p>
+                <p className="mt-4 min-h-[3.5rem] text-base font-semibold text-white md:min-h-0 md:text-lg">Deficiency Detection Accuracy</p>
               </motion.div>
             </FadeIn>
           </div>
@@ -688,7 +731,7 @@ function Testimonial() {
   const reduced = useReducedMotion()
 
   return (
-    <section className="relative overflow-hidden py-16 md:py-24">
+    <section className="relative overflow-hidden py-10 md:py-24">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -716,7 +759,7 @@ function Testimonial() {
 
       <div className="relative mx-auto max-w-3xl px-6">
         <motion.div
-          className="relative rounded-2xl border border-border/60 bg-surface px-8 py-10 md:px-12 md:py-14"
+          className="relative rounded-2xl border border-border/60 bg-surface px-5 py-8 md:px-12 md:py-14"
           initial={reduced ? undefined : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -735,7 +778,7 @@ function Testimonial() {
               <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
             </svg>
 
-            <blockquote className="text-xl leading-relaxed text-text-primary md:text-2xl">
+            <blockquote className="text-lg leading-relaxed text-text-primary md:text-2xl">
               &ldquo;Swift Stack made our COI renewal reviews faster and more consistent, with better visibility into coverage gaps. They were responsive and easy to work with, helping us save time and strengthen risk controls.&rdquo;
             </blockquote>
 
@@ -766,7 +809,7 @@ function FAQ() {
   const [activeTab, setActiveTab] = useState(0)
 
   return (
-    <section id="faq" className="relative min-h-screen overflow-hidden py-20 md:py-28">
+    <section id="faq" className="relative min-h-screen overflow-hidden py-20 md:py-28 scroll-mt-20">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
@@ -801,12 +844,12 @@ function FAQ() {
 
         {/* Category tabs */}
         <FadeIn delay={0.1}>
-          <div className="relative mt-10 grid grid-cols-3 gap-4 mx-auto max-w-md">
+          <div className="relative mt-10 grid grid-cols-3 gap-2 mx-auto max-w-xs md:max-w-md md:gap-4">
             {faqCategories.map((cat, i) => (
               <button
                 key={cat.label}
                 onClick={() => setActiveTab(i)}
-                className={`relative cursor-pointer rounded-full px-6 py-2 text-center text-sm font-medium transition-all duration-250 ${
+                className={`relative cursor-pointer rounded-full px-3 py-2 text-center text-sm font-medium transition-all duration-250 md:px-6 ${
                   activeTab === i
                     ? "text-white"
                     : "text-text-secondary hover:text-text-primary"

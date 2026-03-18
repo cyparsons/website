@@ -199,8 +199,6 @@ export function IngestAnimation() {
                 }
               : { duration: 0.2 }}
           >
-            {/* Comet trail */}
-            <rect x={-90} y={doc.y + 4} width="90" height="16" rx="8" fill="url(#trail)" />
             {/* Document body */}
             <rect x={0} y={doc.y} width="30" height="40" rx="3"
               fill="white" stroke="#006AAE" strokeWidth="1" />

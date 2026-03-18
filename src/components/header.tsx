@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react"
-import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { EASE } from "@/lib/animation"
@@ -43,7 +42,7 @@ function NavLink({ label, href, onClick }: { label: string; href: string; onClic
     <a
       href={href}
       onClick={handleClick}
-      className="nav-link relative px-1 py-1 text-sm font-medium text-text-secondary transition-colors duration-200 hover:text-accent"
+      className="nav-link relative px-1 py-2 text-base font-medium text-text-secondary transition-colors duration-200 hover:text-accent md:py-1 md:text-sm"
     >
       {label}
       <span
@@ -51,6 +50,52 @@ function NavLink({ label, href, onClick }: { label: string; href: string; onClic
         aria-hidden="true"
       />
     </a>
+  )
+}
+
+// Animated hamburger icon that morphs to X
+function MenuIcon({ open }: { open: boolean }) {
+  // Use path-based approach - more reliable rotation in SVG
+  return (
+    <motion.svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      className="text-current"
+    >
+      {/* Top line → rotates to form \ of the X */}
+      <motion.path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        animate={open
+          ? { d: "M 4 4 L 14 14" }
+          : { d: "M 2 4 L 16 4" }
+        }
+        transition={{ duration: 0.3, ease: EASE.smooth }}
+      />
+      {/* Middle line → fades out */}
+      <motion.path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M 2 9 L 16 9"
+        animate={open ? { opacity: 0 } : { opacity: 1 }}
+        transition={{ duration: 0.15, ease: EASE.smooth }}
+      />
+      {/* Bottom line → rotates to form / of the X */}
+      <motion.path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        animate={open
+          ? { d: "M 4 14 L 14 4" }
+          : { d: "M 2 14 L 16 14" }
+        }
+        transition={{ duration: 0.3, ease: EASE.smooth }}
+      />
+    </motion.svg>
   )
 }
 
@@ -72,6 +117,7 @@ export function Header() {
   }, [mobileOpen])
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
@@ -120,82 +166,132 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Mobile: Get Started always visible + hamburger */}
-        <div className="flex items-center gap-3 md:hidden">
-          <Link
-            href="/contact"
-            className="btn-trace inline-flex items-center justify-center px-4 py-2 text-sm"
-          >
-            <span>Get Started</span>
-          </Link>
+        {/* Mobile: animated hamburger/X */}
+        <div className="flex items-center md:hidden">
           <button
-            onClick={() => setMobileOpen(true)}
-            aria-label="Open menu"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            className={`relative z-[110] flex h-10 w-10 items-center justify-center rounded-lg border transition-all duration-300 ${
+              mobileOpen
+                ? "border-white/10 bg-transparent text-white"
+                : "border-border bg-surface text-text-tertiary shadow-sm"
+            }`}
           >
-            <Menu className="h-6 w-6 text-text-primary" />
+            <MenuIcon open={mobileOpen} />
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
+    </header>
+
+      {/* Mobile menu — full-screen overlay (outside header to avoid backdrop-filter containing block) */}
       <AnimatePresence>
         {mobileOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setMobileOpen(false)}
+          <motion.div
+            className="fixed inset-0 z-[100] flex flex-col overflow-hidden"
+            style={{ backgroundColor: "#0A1628" }}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: EASE.smooth }}
+          >
+            {/* Background grid */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.06) 1px, transparent 1px)",
+                backgroundSize: "48px 48px",
+              }}
+              aria-hidden="true"
             />
-            <motion.div
-              className="fixed right-0 top-0 bottom-0 z-50 w-80 max-w-[85vw] border-l border-border bg-surface shadow-2xl"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.3, ease: EASE.smooth }}
-            >
-              <div className="p-6">
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="mb-8"
-                  aria-label="Close menu"
-                >
-                  <X className="h-6 w-6 text-text-primary" />
-                </button>
+            {/* Glow orb */}
+            <div
+              className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-30 blur-[120px]"
+              style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.2), transparent 70%)" }}
+              aria-hidden="true"
+            />
 
-                <div className="flex flex-col gap-5">
-                  {navLinks.map((link) => (
-                    <NavLink
-                      key={link.href}
-                      label={link.label}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                    />
-                  ))}
-                  <div className="mt-2 border-t border-border/50 pt-5 flex flex-col gap-4">
-                    <a
-                      href="https://app.swiftcoi.ai/"
-                      className="text-base text-text-secondary hover:text-accent transition-colors duration-200"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      Log In
-                    </a>
-                    <Link
-                      href="/contact"
-                      className="btn-trace inline-flex w-full items-center justify-center px-5 py-3 text-sm"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <span>Get Started</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+            {/* Top bar: logo + close */}
+            <div className="relative flex items-center justify-between px-6 py-4">
+              <Link
+                href="/"
+                className="flex items-center"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Logo textColor="#FFFFFF" className="h-8 w-auto" />
+              </Link>
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-white"
+              >
+                <MenuIcon open={true} />
+              </button>
+            </div>
+
+            {/* Accent line */}
+            <div
+              className="mx-6 h-px"
+              style={{ background: "linear-gradient(90deg, transparent, rgba(42, 160, 230, 0.3), transparent)" }}
+              aria-hidden="true"
+            />
+
+            {/* Nav links — centered with hover states */}
+            <div className="relative flex flex-1 flex-col items-center justify-center gap-1 px-6">
+              {navLinks.map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.06, duration: 0.35, ease: EASE.smooth }}
+                >
+                  <a
+                    href={link.href}
+                    onClick={(e) => {
+                      const isAnchor = link.href.startsWith("/#")
+                      if (isAnchor) {
+                        e.preventDefault()
+                        setMobileOpen(false)
+                        const id = link.href.replace("/#", "")
+                        setTimeout(() => {
+                          const el = document.getElementById(id)
+                          if (el) el.scrollIntoView({ behavior: "smooth" })
+                        }, 350)
+                      } else {
+                        setMobileOpen(false)
+                      }
+                    }}
+                    className="group block rounded-xl px-8 py-3 text-center text-2xl font-semibold text-white/80 transition-all duration-200 hover:bg-white/5 hover:text-accent active:bg-white/10"
+                  >
+                    <span className="relative">
+                      {link.label}
+                      <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all duration-200 group-hover:w-full" />
+                    </span>
+                  </a>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Bottom CTA */}
+            <motion.div
+              className="relative px-6 pb-10"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.35, ease: EASE.smooth }}
+            >
+              <Link
+                href="/contact"
+                className="btn-trace inline-flex w-full items-center justify-center px-5 py-3.5 text-base"
+                onClick={() => setMobileOpen(false)}
+              >
+                <span>Get Started</span>
+              </Link>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   )
 }
