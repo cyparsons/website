@@ -53,49 +53,35 @@ function NavLink({ label, href, onClick }: { label: string; href: string; onClic
   )
 }
 
-// Animated hamburger icon that morphs to X
+// Animated hamburger icon that morphs to X (transform-based for Safari compatibility)
 function MenuIcon({ open }: { open: boolean }) {
-  // Use path-based approach - more reliable rotation in SVG
   return (
-    <motion.svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      className="text-current"
-    >
-      {/* Top line → rotates to form \ of the X */}
-      <motion.path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
+    <div className="relative" style={{ width: 18, height: 18 }}>
+      {/* Top line */}
+      <motion.span
+        className="absolute left-0 block h-[1.5px] w-full rounded-full bg-current"
         animate={open
-          ? { d: "M 4 4 L 14 14" }
-          : { d: "M 2 4 L 16 4" }
+          ? { top: 8, rotate: 45 }
+          : { top: 3, rotate: 0 }
         }
         transition={{ duration: 0.3, ease: EASE.smooth }}
       />
-      {/* Middle line → fades out */}
-      <motion.path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        d="M 2 9 L 16 9"
+      {/* Middle line */}
+      <motion.span
+        className="absolute left-0 top-[8px] block h-[1.5px] w-full rounded-full bg-current"
         animate={open ? { opacity: 0 } : { opacity: 1 }}
         transition={{ duration: 0.15, ease: EASE.smooth }}
       />
-      {/* Bottom line → rotates to form / of the X */}
-      <motion.path
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
+      {/* Bottom line */}
+      <motion.span
+        className="absolute left-0 block h-[1.5px] w-full rounded-full bg-current"
         animate={open
-          ? { d: "M 4 14 L 14 4" }
-          : { d: "M 2 14 L 16 14" }
+          ? { top: 8, rotate: -45 }
+          : { top: 13, rotate: 0 }
         }
         transition={{ duration: 0.3, ease: EASE.smooth }}
       />
-    </motion.svg>
+    </div>
   )
 }
 
@@ -192,8 +178,6 @@ export function Header() {
           <motion.div
             className="fixed inset-0 z-[100] flex flex-col overflow-hidden"
             style={{ backgroundColor: "#0A1628" }}
-            onWheel={(e) => e.preventDefault()}
-            onTouchMove={(e) => e.preventDefault()}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
