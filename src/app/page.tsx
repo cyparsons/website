@@ -143,7 +143,7 @@ function Hero() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-30 blur-[120px]"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-30 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -226,7 +226,7 @@ function Hero() {
 
 function TheProblem() {
   return (
-    <section className="relative hidden md:flex md:min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
+    <section className="content-auto relative hidden md:flex md:min-h-screen items-center overflow-hidden py-20 md:py-28" style={{ backgroundColor: "#0A1628" }}>
       {/* Grid */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -238,33 +238,22 @@ function TheProblem() {
         aria-hidden="true"
       />
       <GridPulses variant="dark" />
-      {/* Bright grid near orbs */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 400px 300px at 65% 15%, rgba(0,0,0,0.6), transparent), radial-gradient(ellipse 400px 300px at 25% 85%, rgba(0,0,0,0.5), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 400px 300px at 65% 15%, rgba(0,0,0,0.6), transparent), radial-gradient(ellipse 400px 300px at 25% 85%, rgba(0,0,0,0.5), transparent)",
-        }}
-        aria-hidden="true"
-      />
+      {/* Bright grid near orbs — removed for Safari performance */}
       {/* Radial fade */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, #0A1628 75%)" }}
         aria-hidden="true"
       />
-      {/* Glow orb — top right */}
+      {/* Glow orb — top right (reduced size for Safari) */}
       <div
-        className="pointer-events-none absolute top-[15%] left-[65%] -translate-x-1/2 -translate-y-1/2 h-[550px] w-[650px] rounded-full opacity-50 blur-[140px]"
+        className="pointer-events-none absolute top-[15%] left-[65%] -translate-x-1/2 -translate-y-1/2 h-[350px] w-[450px] rounded-full opacity-40 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.35), transparent 65%)" }}
         aria-hidden="true"
       />
-      {/* Glow orb — bottom left */}
+      {/* Glow orb — bottom left (reduced size for Safari) */}
       <div
-        className="pointer-events-none absolute bottom-[10%] left-[25%] -translate-x-1/2 h-[500px] w-[600px] rounded-full opacity-45 blur-[140px]"
+        className="pointer-events-none absolute bottom-[10%] left-[25%] -translate-x-1/2 h-[300px] w-[400px] rounded-full opacity-35 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(50, 180, 255, 0.3), transparent 65%)" }}
         aria-hidden="true"
       />
@@ -291,20 +280,9 @@ function TheProblem() {
 
 function TheSolution() {
   return (
-    <section id="solution" className="relative overflow-hidden py-16 pb-20 md:py-16 md:pb-28 scroll-mt-16">
+    <section id="solution" className="content-auto relative overflow-hidden py-16 pb-20 md:py-16 md:pb-28 scroll-mt-16">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 500px 400px at 40% 30%, rgba(0,0,0,0.6), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 500px 400px at 40% 30%, rgba(0,0,0,0.6), transparent)",
-        }}
-        aria-hidden="true"
-      />
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, var(--color-surface) 80%)" }}
@@ -312,7 +290,7 @@ function TheSolution() {
       />
       {/* Glow orb — upper left */}
       <div
-        className="pointer-events-none absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 h-[250px] w-[325px] md:h-[500px] md:w-[650px] rounded-full opacity-25 blur-[120px]"
+        className="pointer-events-none absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 h-[250px] w-[325px] md:h-[500px] md:w-[650px] rounded-full opacity-25 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -405,27 +383,16 @@ function HowItWorks() {
   const stepVisible = [s0Visible, s1Visible, s2Visible]
 
   return (
-    <section id="how-it-works" className="relative py-16 pb-28 md:py-24 md:pb-36 scroll-mt-20">
+    <section id="how-it-works" className="content-auto relative py-16 pb-28 md:py-24 md:pb-36 scroll-mt-20">
       {/* Background grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 600px 500px at 50% 40%, rgba(0,0,0,0.5), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 600px 500px at 50% 40%, rgba(0,0,0,0.5), transparent)",
-        }}
-        aria-hidden="true"
-      />
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, var(--color-surface) 80%)" }}
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-20 blur-[140px]"
+        className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full opacity-20 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -584,7 +551,7 @@ function Results() {
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
 
   return (
-    <section id="results" className="relative flex items-center md:min-h-screen overflow-hidden py-12 pb-20 md:py-28 scroll-mt-20" style={{ backgroundColor: "#0A1628" }}>
+    <section id="results" className="content-auto relative flex items-center md:min-h-screen overflow-hidden py-12 pb-20 md:py-28 scroll-mt-20" style={{ backgroundColor: "#0A1628" }}>
       {/* Grid */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -595,34 +562,17 @@ function Results() {
         }}
         aria-hidden="true"
       />
-      {/* Bright grid near orb — desktop only */}
-      <div
-        className="pointer-events-none absolute inset-0 hidden md:block"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 450px 350px at 30% 30%, rgba(0,0,0,0.6), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 450px 350px at 30% 30%, rgba(0,0,0,0.6), transparent)",
-        }}
-        aria-hidden="true"
-      />
+      {/* Bright grid near orb — removed for Safari performance */}
       {/* Radial fade */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 35%, #0A1628 75%)" }}
         aria-hidden="true"
       />
-      {/* Glow orb — left */}
+      {/* Glow orb — center (combined, reduced for Safari) */}
       <div
-        className="pointer-events-none absolute top-[40%] left-[25%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[600px] rounded-full opacity-35 blur-[120px]"
+        className="pointer-events-none absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[350px] w-[500px] rounded-full opacity-30 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.22), transparent 70%)" }}
-        aria-hidden="true"
-      />
-      {/* Glow orb — right */}
-      <div
-        className="pointer-events-none absolute top-[35%] left-[75%] -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full opacity-25 blur-[120px]"
-        style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.18), transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -761,23 +711,12 @@ function Testimonial() {
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
         className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 400px 300px at 50% 50%, rgba(0,0,0,0.5), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 400px 300px at 50% 50%, rgba(0,0,0,0.5), transparent)",
-        }}
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, var(--color-surface) 80%)" }}
         aria-hidden="true"
       />
       {/* Glow orb — center */}
       <div
-        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-20 blur-[120px]"
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-20 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.12), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -834,20 +773,9 @@ function FAQ() {
   const [activeTab, setActiveTab] = useState(0)
 
   return (
-    <section id="faq" className="relative min-h-screen overflow-hidden py-20 md:py-28 scroll-mt-20">
+    <section id="faq" className="content-auto relative min-h-screen overflow-hidden py-20 md:py-28 scroll-mt-20">
       {/* Grid */}
       <div className="bg-line-grid-fade pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.09) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 400px 350px at 70% 60%, rgba(0,0,0,0.6), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 400px 350px at 70% 60%, rgba(0,0,0,0.6), transparent)",
-        }}
-        aria-hidden="true"
-      />
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 30%, var(--color-surface) 80%)" }}
@@ -855,7 +783,7 @@ function FAQ() {
       />
       {/* Glow orb — lower right */}
       <div
-        className="pointer-events-none absolute top-[55%] left-[70%] -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full opacity-20 blur-[120px]"
+        className="pointer-events-none absolute top-[55%] left-[70%] -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full opacity-20 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.15), transparent 70%)" }}
         aria-hidden="true"
       />
@@ -917,7 +845,7 @@ function FAQ() {
 
 function CTASection() {
   return (
-    <section id="cta" className="relative overflow-hidden" style={{ backgroundColor: "#0A1628" }}>
+    <section id="cta" className="content-auto relative overflow-hidden" style={{ backgroundColor: "#0A1628" }}>
       {/* Grid — covers entire section including fade zone */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -928,18 +856,7 @@ function CTASection() {
         }}
         aria-hidden="true"
       />
-      {/* Bright grid near glow */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(to right, rgba(42, 160, 230, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 160, 230, 0.14) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          backgroundPosition: "center center",
-          maskImage: "radial-gradient(ellipse 500px 400px at 50% 60%, rgba(0,0,0,0.5), transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 500px 400px at 50% 60%, rgba(0,0,0,0.5), transparent)",
-        }}
-        aria-hidden="true"
-      />
+      {/* Bright grid near glow — removed for Safari performance */}
       <GridPulses variant="dark" />
       {/* Radial fade to edges */}
       <div
@@ -947,9 +864,9 @@ function CTASection() {
         style={{ background: "radial-gradient(ellipse at 50% 60%, transparent 30%, #0A1628 75%)" }}
         aria-hidden="true"
       />
-      {/* Glow orb — center */}
+      {/* Glow orb — center (reduced for Safari) */}
       <div
-        className="pointer-events-none absolute top-[55%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[500px] w-[650px] rounded-full opacity-40 blur-[140px]"
+        className="pointer-events-none absolute top-[55%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[350px] w-[450px] rounded-full opacity-35 blur-[80px]"
         style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.25), transparent 65%)" }}
         aria-hidden="true"
       />

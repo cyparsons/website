@@ -194,7 +194,7 @@ export function Header() {
             />
             {/* Glow orb */}
             <div
-              className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-30 blur-[120px]"
+              className="pointer-events-none absolute top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 h-[400px] w-[500px] rounded-full opacity-30 blur-[80px]"
               style={{ background: "radial-gradient(circle, rgba(42, 160, 230, 0.2), transparent 70%)" }}
               aria-hidden="true"
             />

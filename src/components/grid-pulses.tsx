@@ -18,13 +18,9 @@ interface Pulse {
 const GRID = 48 // matches bg-line-grid-fade
 
 const DEFAULT_PULSES: Pulse[] = [
-  // Horizontal pulses
-  { direction: "h", gridLine: 3,  duration: 12, delay: 0,   length: 140 },
-  { direction: "h", gridLine: 7,  duration: 14, delay: 4,   length: 120 },
-  { direction: "h", gridLine: 11, duration: 11, delay: 8,   length: 160 },
-  // Vertical pulses
-  { direction: "v", gridLine: 5,  duration: 13, delay: 2,   length: 130 },
-  { direction: "v", gridLine: 14, duration: 15, delay: 6,   length: 110 },
+  // Reduced from 5 to 2 for Safari performance — fewer infinite animations
+  { direction: "h", gridLine: 5,  duration: 18, delay: 0,   length: 140 },
+  { direction: "v", gridLine: 10, duration: 20, delay: 3,   length: 130 },
 ]
 
 export function GridPulses({
@@ -59,7 +55,7 @@ export function GridPulses({
                 width: len,
                 height: 1,
                 background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
-                filter: "blur(0.5px)",
+                willChange: "transform",
               }}
               animate={{ x: ["calc(-100%)", "calc(100vw + 100%)"] }}
               transition={{
@@ -82,7 +78,7 @@ export function GridPulses({
               height: len,
               width: 1,
               background: `linear-gradient(180deg, transparent, ${color}, transparent)`,
-              filter: "blur(0.5px)",
+              willChange: "transform",
             }}
             animate={{ y: ["calc(-100%)", "calc(100vh + 100%)"] }}
             transition={{
