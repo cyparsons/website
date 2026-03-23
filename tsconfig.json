@@ -38,6 +38,7 @@
   "exclude": [
     "node_modules",
     "remotion",
-    "remotion_product"
+    "remotion_product",
+    "content-engine"
   ]
 }

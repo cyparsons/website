@@ -71,9 +71,16 @@ export function Footer() {
               <Linkedin className="h-4 w-4" />
             </a>
           </div>
-          <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} Swift Stack Solutions
-          </p>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <p>&copy; {new Date().getFullYear()} Swift Stack Solutions</p>
+            <span aria-hidden="true">&middot;</span>
+            <Link
+              href="/privacy-policy"
+              className="text-gray-500 transition-colors duration-200 hover:text-gray-400"
+            >
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

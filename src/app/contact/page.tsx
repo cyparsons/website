@@ -57,19 +57,39 @@ export default function ContactPage() {
       { objectTypeId: "0-1", name: "message", value: data.get("message") as string },
     ].filter((f) => f.value)
 
+    const marketingConsent = data.get("marketing_consent") === "on"
+
+    const body: Record<string, unknown> = {
+      fields,
+      context: {
+        pageUri: window.location.href,
+        pageName: "Get Started",
+      },
+    }
+
+    if (marketingConsent) {
+      body.legalConsentOptions = {
+        consent: {
+          consentToProcess: true,
+          text: "By submitting this form, you agree that Swift Stack Solutions may use the information you provide to respond to your inquiry.",
+          communications: [
+            {
+              value: true,
+              subscriptionTypeId: 999,
+              text: "I would like to receive emails from Swift Stack Solutions about product updates, launch announcements, and related company communications.",
+            },
+          ],
+        },
+      }
+    }
+
     try {
       const res = await fetch(
         `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields,
-            context: {
-              pageUri: window.location.href,
-              pageName: "Get Started",
-            },
-          }),
+          body: JSON.stringify(body),
         }
       )
 
@@ -285,6 +305,44 @@ export default function ContactPage() {
                       className="w-full resize-none rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary placeholder-text-tertiary transition-all duration-150 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                       placeholder="Tell us about your COI review process, deal volume, or what you're looking to improve"
                     />
+                  </div>
+
+                  {/* CASL consent */}
+                  <div className="space-y-3 pt-1">
+                    <p className="text-xs leading-relaxed text-text-tertiary">
+                      By submitting this form, you agree that Swift Stack
+                      Solutions may use the information you provide to respond to
+                      your inquiry and communicate with you about that inquiry.
+                      See our{" "}
+                      <Link
+                        href="/privacy-policy"
+                        className="text-accent underline transition-colors duration-200 hover:text-accent-hover"
+                      >
+                        Privacy Policy
+                      </Link>
+                      .
+                    </p>
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="marketing_consent"
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-accent"
+                      />
+                      <span className="text-xs leading-relaxed text-text-tertiary">
+                        Yes, I would like to receive emails from Swift Stack
+                        Solutions about product updates, launch announcements,
+                        and related company communications. You can withdraw your
+                        consent at any time by clicking the unsubscribe link in
+                        any email or by contacting{" "}
+                        <a
+                          href="mailto:hello@swiftstacksolutions.com"
+                          className="text-accent underline transition-colors duration-200 hover:text-accent-hover"
+                        >
+                          hello@swiftstacksolutions.com
+                        </a>
+                        .
+                      </span>
+                    </label>
                   </div>
 
                   {/* Submit */}
